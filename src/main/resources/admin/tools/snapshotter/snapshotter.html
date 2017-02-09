@@ -31,17 +31,17 @@
             <h2>Active schedules</h2>
             {{#data.schedules}}
             <ul class="collection with-header">
-                <li class="collection-header">
+                <li class="collection-header light-green lighten-3">
                     <div class="valign-wrapper">
-                        <span><i class="material-icons medium icon">query_builder</i></span>
+                        <span><i class="material-icons medium icon">schedule</i></span>
                         <span class="scheduleHeader"> &nbsp; {{name}}</span>
                     </div>
                 </li>
                 <li class="collection-item">
                     <ul>
-                        <li><span class="label">Cron: </span>{{cron}}</li>
+                        <li><span class="label">Schedule: </span>{{cron}}</li>
                         <li><span class="label">Keep: </span>{{keep}}</li>
-                        <li><span class="label">Next: </span>{{nextExecTime}}</li>
+                        <li><span class="label">Next run: </span>{{readable}}</li>
                     </ul>
                 </li>
             </ul>

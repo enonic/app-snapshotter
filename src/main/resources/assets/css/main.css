@@ -24,6 +24,10 @@ ul li .label {
     font-weight: bold;
 }
 
+.collection-header {
+    background-color: #00b0ff;
+}
+
 .scheduleHeader {
     font-size: 2.0em;
 }
