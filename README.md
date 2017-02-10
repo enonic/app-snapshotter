@@ -2,6 +2,8 @@
 
 The snapshotter-app enables automatic snapshotting of your Enonic XP repository indexes - see http://xp.readthedocs.io/en/stable/operations/backup.html
 
+Doing a snapshot will store only the changes from the last snapshot, so normally its a very lightweight operation.
+
 NOTE: You will still need a way to do backups of the blobs (files) - this is just to automate the snapshots of the indexes.
 
 
@@ -35,9 +37,10 @@ The ``cron``-property is a string in Unix cron format (http://www.nncron.ru/help
 
 The keep-time is given as a java Duration parsable string (https://docs.oracle.com/javase/8/docs/api/java/time/Duration.html) - snapshots from the schedule older than this will be automatically deleted
 
-You can add new schedules if needed:
+You can add new, named schedules if needed:
 
     snapshot.every-ten-minutes.cron=0/10 * * * *
     snapshot.every-ten-minutes.keep=PT2H
     snapshot.every-ten-minutes.enabled=true
 
+To disable a default schedule, just set enabled to false, e.g ``snapshot.hourly.enabled=false``
