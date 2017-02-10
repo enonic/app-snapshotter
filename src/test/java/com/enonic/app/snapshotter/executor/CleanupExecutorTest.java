@@ -13,6 +13,7 @@ import com.enonic.app.snapshotter.mail.MailSender;
 import com.enonic.app.snapshotter.model.CleanupJob;
 import com.enonic.app.snapshotter.model.Schedule;
 import com.enonic.app.snapshotter.model.Schedules;
+import com.enonic.xp.index.IndexService;
 import com.enonic.xp.node.DeleteSnapshotParams;
 import com.enonic.xp.node.DeleteSnapshotsResult;
 import com.enonic.xp.node.NodeService;
@@ -25,18 +26,24 @@ public class CleanupExecutorTest
 
     private MailSender mailSender;
 
+    private IndexService indexService;
+
     @Before
     public void setUp()
         throws Exception
     {
         this.nodeService = Mockito.mock( NodeService.class );
         this.mailSender = Mockito.mock( MailSender.class );
+        this.indexService = Mockito.mock( IndexService.class );
     }
 
     @Test
-    public void name()
+    public void execute()
         throws Exception
     {
+        Mockito.when( this.indexService.isMaster() ).
+            thenReturn( true );
+
         Mockito.when( this.nodeService.listSnapshots() ).
             thenReturn( SnapshotResults.create().
                 add( SnapshotResult.create().
@@ -60,6 +67,7 @@ public class CleanupExecutorTest
         final CleanupExecutor executor = CleanupExecutor.create().
             nodeService( this.nodeService ).
             mailSender( this.mailSender ).
+            indexService( this.indexService ).
             config( config ).
             build();
 

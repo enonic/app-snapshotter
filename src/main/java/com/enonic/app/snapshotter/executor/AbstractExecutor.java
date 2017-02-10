@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import com.enonic.app.snapshotter.SnapshotterConfig;
 import com.enonic.app.snapshotter.mail.MailSender;
 import com.enonic.app.snapshotter.model.Job;
+import com.enonic.xp.index.IndexService;
 import com.enonic.xp.node.NodeService;
 
 public abstract class AbstractExecutor<T extends Job>
@@ -17,6 +18,8 @@ public abstract class AbstractExecutor<T extends Job>
 
     protected final MailSender mailSender;
 
+    protected final IndexService indexService;
+
     private final Logger LOG = LoggerFactory.getLogger( getClass() );
 
     protected AbstractExecutor( final Builder builder )
@@ -24,10 +27,17 @@ public abstract class AbstractExecutor<T extends Job>
         config = builder.config;
         nodeService = builder.nodeService;
         mailSender = builder.mailSender;
+        indexService = builder.indexService;
     }
 
     protected void doExecute( final Runnable runnable, final Job job )
     {
+
+        if ( !this.indexService.isMaster() )
+        {
+            return;
+        }
+
         try
         {
             runnable.run();
@@ -57,6 +67,8 @@ public abstract class AbstractExecutor<T extends Job>
 
         private MailSender mailSender;
 
+        private IndexService indexService;
+
         @SuppressWarnings("unchecked")
         public B config( final SnapshotterConfig val )
         {
@@ -75,6 +87,13 @@ public abstract class AbstractExecutor<T extends Job>
         public B nodeService( final NodeService val )
         {
             nodeService = val;
+            return (B) this;
+        }
+
+        @SuppressWarnings("unchecked")
+        public B indexService( final IndexService val )
+        {
+            this.indexService = val;
             return (B) this;
         }
     }

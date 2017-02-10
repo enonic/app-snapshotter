@@ -43,12 +43,6 @@ public class SnapshotterConfigImpl
         return SchedulesParser.parse( this.config );
     }
 
-    @Deactivate
-    public void deactivate()
-    {
-        System.out.println( "Deactivating config" );
-    }
-
     @Override
     public String cleanCron()
     {
