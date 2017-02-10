@@ -4,6 +4,8 @@ The snapshotter-app enables automatic snapshotting of your Enonic XP repository 
 
 Doing a snapshot will store only the changes from the last snapshot, so normally its a very lightweight operation.
 
+The application is cluster-safe; only the master node will trigger snapshots and cleanups.
+
 NOTE: You will still need a way to do backups of the blobs (files) - this is just to automate the snapshots of the indexes.
 
 
