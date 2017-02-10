@@ -13,6 +13,7 @@ buildscript {
 }
 
 apply plugin: 'com.enonic.xp.app'
+apply plugin: 'maven'
 
 app {
     name = project.appName
@@ -30,15 +31,6 @@ dependencies {
     include "com.enonic.xp:lib-mustache:${xpVersion}"
     compile 'junit:junit:4.10'
     compile 'org.mockito:mockito-core:1.10.19'
-    //include "com.enonic.xp:lib-xslt:${xpVersion}"
-    //include "com.enonic.xp:lib-i18n:${xpVersion}"
-    //include "com.enonic.xp:lib-auth:${xpVersion}"
-    //include "com.enonic.xp:lib-cache:${xpVersion}"
-    //include "com.enonic.xp:lib-context:${xpVersion}"
-    //include "com.enonic.xp:lib-http-client:${xpVersion}"
-    //include "com.enonic.xp:lib-io:${xpVersion}"
-    //include "com.enonic.xp:lib-mail:${xpVersion}"
-    //include "com.enonic.xp:lib-websocket:${xpVersion}"
 }
 
 repositories {
@@ -46,5 +38,13 @@ repositories {
     jcenter()
     maven {
         url 'http://repo.enonic.com/public'
+    }
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository( url: 'http://repo.enonic.com/artifactory/public' )
+        }
     }
 }

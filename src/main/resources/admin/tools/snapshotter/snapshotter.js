@@ -15,12 +15,7 @@ exports.get = function (req) {
         schedule.readable = date.toLocaleDateString() + " " + date.toLocaleTimeString();
 
     });
-
-    log.info("Schedules: %s", JSON.stringify(result, null, 2));
-
-
-    log.info("Schedules: %s", JSON.stringify(result, null, 2));
-
+    
     var model = {
         jsUrl: portal.assetUrl({path: "/js/main.js"}),
         assetsUrl: portal.assetUrl({path: ""}),

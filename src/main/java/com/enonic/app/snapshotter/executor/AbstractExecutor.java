@@ -40,7 +40,7 @@ public abstract class AbstractExecutor<T extends Job>
         }
         catch ( Exception e )
         {
-            LOG.warn( "Snapshot job [" + job.description() + "] failed", e );
+            LOG.error( "Snapshotter job [" + job.description() + "] failed", e );
 
             if ( this.config.mailOnFailure() && this.config.mailIsConfigured() )
             {
