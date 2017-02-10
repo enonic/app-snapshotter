@@ -32,7 +32,7 @@ public abstract class AbstractExecutor<T extends Job>
         {
             runnable.run();
 
-            if ( this.config.mailOnSuccess() )
+            if ( this.config.mailOnSuccess() && this.config.mailIsConfigured() )
             {
                 this.mailSender.sendSuccess( job );
             }
@@ -42,7 +42,7 @@ public abstract class AbstractExecutor<T extends Job>
         {
             LOG.warn( "Snapshot job [" + job.description() + "] failed", e );
 
-            if ( this.config.mailOnFailure() )
+            if ( this.config.mailOnFailure() && this.config.mailIsConfigured() )
             {
                 this.mailSender.sendFailed( job, e );
             }

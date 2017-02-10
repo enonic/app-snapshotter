@@ -24,7 +24,7 @@ public class SchedulerImpl
     public void schedule( final Job job )
     {
         final Duration executionTime = job.nextExecutionTime();
-        LOG.info( "Scheduling job: " + job.description() + " in " + executionTime.toString() );
+        LOG.debug( "Scheduling job: " + job.description() + " in " + executionTime.toString() );
         final JobTask task = new JobTask( job.executor(), job, this );
         this.timer.schedule( task, executionTime.toMillis() );
     }
@@ -32,7 +32,7 @@ public class SchedulerImpl
     @Override
     public void unschedule()
     {
-        LOG.info( "Removing all scheduled snapshots" );
+        LOG.debug( "Removing all scheduled snapshots" );
         this.timer.cancel();
         this.timer.purge();
     }

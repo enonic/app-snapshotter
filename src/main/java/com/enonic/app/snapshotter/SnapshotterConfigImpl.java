@@ -7,6 +7,7 @@ import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 
 import com.enonic.app.snapshotter.model.Schedules;
@@ -84,13 +85,28 @@ public class SnapshotterConfigImpl
         return this.config.getOrDefault( "mail.hostname", null );
     }
 
+    @Override
+    public boolean mailIsConfigured()
+    {
+        return !this.to().isEmpty() && !this.from().isEmpty();
+    }
+
     private List<String> doGetCommaSeparated( final String property )
     {
+        final List<String> entries = Lists.newArrayList();
+
         if ( this.config.exists( property ) )
         {
-            return Lists.newArrayList( this.config.get( property ).split( "," ) );
-        }
+            final String[] split = this.config.get( property ).split( "," );
 
-        return Lists.newArrayList();
+            for ( final String entry : split )
+            {
+                if ( !Strings.isNullOrEmpty( entry ) )
+                {
+                    entries.add( entry );
+                }
+            }
+        }
+        return entries;
     }
 }

@@ -18,5 +18,7 @@ public interface SnapshotterConfig
 
     List<String> to();
 
+    boolean mailIsConfigured();
+
     String hostname();
 }

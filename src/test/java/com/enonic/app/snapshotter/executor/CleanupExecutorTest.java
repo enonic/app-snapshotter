@@ -121,6 +121,12 @@ public class CleanupExecutorTest
             {
                 return null;
             }
+
+            @Override
+            public boolean mailIsConfigured()
+            {
+                return false;
+            }
         };
     }
 }
