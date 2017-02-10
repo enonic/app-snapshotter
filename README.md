@@ -47,6 +47,10 @@ You can add new, named schedules if needed:
 
 To disable a default schedule, just set enabled to false, e.g ``snapshot.hourly.enabled=false``
 
+### Cleanup
+
+The cleanup schedule is set up to run every hour by default. This will delete snapshots that are outside the keep-range of the schedules.
+
 ### Mail
 
 If you Enonic XP installation is configured for mail (http://xp.readthedocs.io/en/stable/operations/configuration.html#mail-configuration) the Snapshotter app can be configured for sending email when snapshot operations are done. Usually you want to receive a mail if something goes wrong (``mail.onFailure=true``) but you can also set it up to send a mail when everything is ok (``mail.onSuccess=true``)
