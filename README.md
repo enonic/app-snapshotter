@@ -11,6 +11,8 @@ NOTE: You will still need a way to do backups of the blobs (files) - this is jus
 
 This application can be configured in file ``$XP_HOME/config/com.enonic.app.snapshotter``
 
+### Schedules
+
 As default, three schedules are added; hourly, daily and weekly:
 
     snapshot.hourly.cron=1 * * * *
@@ -35,7 +37,7 @@ As default, three schedules are added; hourly, daily and weekly:
 
 The ``cron``-property is a string in Unix cron format (http://www.nncron.ru/help/EN/working/cron-format.htm)
 
-The keep-time is given as a java Duration parsable string (https://docs.oracle.com/javase/8/docs/api/java/time/Duration.html) - snapshots from the schedule older than this will be automatically deleted
+The keep-time is given as a java Duration parsable string (https://en.wikipedia.org/wiki/ISO_8601#Durations) - snapshots from the schedule older than this will be automatically deleted
 
 You can add new, named schedules if needed:
 
@@ -44,3 +46,12 @@ You can add new, named schedules if needed:
     snapshot.every-ten-minutes.enabled=true
 
 To disable a default schedule, just set enabled to false, e.g ``snapshot.hourly.enabled=false``
+
+### Mail
+
+If you Enonic XP installation is configured for mail (http://xp.readthedocs.io/en/stable/operations/configuration.html#mail-configuration) the Snapshotter app can be configured for sending email when snapshot operations are done. Usually you want to receive a mail if something goes wrong (``mail.onFailure=true``) but you can also set it up to send a mail when everything is ok (``mail.onSuccess=true``)
+
+The ``mail.to`` and ``mail.from`` should be comma-separated list of email-adresses.
+
+The ``mail.hostname`` will override the automatic host-name detection if desired.
+
