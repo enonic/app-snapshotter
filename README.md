@@ -49,7 +49,7 @@ To disable a default schedule, just set enabled to false, e.g ``snapshot.hourly.
 
 ### Cleanup
 
-The cleanup schedule is set up to run every hour by default. This will delete snapshots that are outside the keep-range of the schedules.
+The cleanup schedule is set up to run every hour by default. This will delete snapshots that are outside the keep-range of the schedules. This schedule can be configured by changing the ``cleanup.cron``
 
 ### Mail
 
