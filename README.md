@@ -25,7 +25,7 @@ As default, three schedules are added; hourly, daily and weekly:
     snapshot.daily.keep=P7D
     snapshot.daily.enabled=true
 
-    snapshot.weekly.cron=* 4 * * 0
+    snapshot.weekly.cron=0 4 * * 0
     snapshot.weekly.keep=P30D
     snapshot.weekly.enabled=true
 
