@@ -9,11 +9,8 @@ exports.get = function (req) {
     var result = snapshotter.schedules();
 
     result.schedules.forEach(function (schedule) {
-
         var date = new Date(Date.parse(schedule.nextExecTime));
-
         schedule.readable = date.toLocaleDateString() + " " + date.toLocaleTimeString();
-
     });
     
     var model = {

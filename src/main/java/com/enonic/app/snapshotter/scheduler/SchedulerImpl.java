@@ -26,7 +26,14 @@ public class SchedulerImpl
         final Duration executionTime = job.nextExecutionTime();
         LOG.debug( "Scheduling job: " + job.description() + " in " + executionTime.toString() );
         final JobTask task = new JobTask( job.executor(), job, this );
-        this.timer.schedule( task, executionTime.toMillis() );
+        try
+        {
+            this.timer.schedule( task, executionTime.toMillis() );
+        }
+        catch ( final IllegalStateException e )
+        {
+            LOG.error( "Timer in invalid state, restart application to restore state" );
+        }
     }
 
     @Override
