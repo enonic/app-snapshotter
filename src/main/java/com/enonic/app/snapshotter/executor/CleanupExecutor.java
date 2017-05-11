@@ -48,7 +48,7 @@ public class CleanupExecutor
     {
         LOG.debug( "Deleting snapshots of type [" + prefix + "] older than [" + threshold + "]" );
 
-        final SnapshotResults snapshots = this.nodeService.listSnapshots();
+        final SnapshotResults snapshots = this.snapshotService.list();
 
         final List<String> doBeDeleted = snapshots.stream().
             filter( ( snapshot ) -> snapshot.getTimestamp().isBefore( threshold ) ).
@@ -56,7 +56,7 @@ public class CleanupExecutor
             map( SnapshotResult::getName ).
             collect( Collectors.toList() );
 
-        this.nodeService.deleteSnapshot( DeleteSnapshotParams.create().
+        this.snapshotService.delete( DeleteSnapshotParams.create().
             addAll( doBeDeleted ).
             build() );
     }

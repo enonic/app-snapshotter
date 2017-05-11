@@ -8,13 +8,14 @@ import com.enonic.app.snapshotter.mail.MailSender;
 import com.enonic.app.snapshotter.model.Job;
 import com.enonic.xp.index.IndexService;
 import com.enonic.xp.node.NodeService;
+import com.enonic.xp.snapshot.SnapshotService;
 
 public abstract class AbstractExecutor<T extends Job>
     implements Executor<T>
 {
     protected final SnapshotterConfig config;
 
-    protected final NodeService nodeService;
+    protected final SnapshotService snapshotService;
 
     protected final MailSender mailSender;
 
@@ -25,7 +26,7 @@ public abstract class AbstractExecutor<T extends Job>
     protected AbstractExecutor( final Builder builder )
     {
         config = builder.config;
-        nodeService = builder.nodeService;
+        snapshotService = builder.snapshotService;
         mailSender = builder.mailSender;
         indexService = builder.indexService;
     }
@@ -63,7 +64,7 @@ public abstract class AbstractExecutor<T extends Job>
     {
         private SnapshotterConfig config;
 
-        private NodeService nodeService;
+        private SnapshotService snapshotService;
 
         private MailSender mailSender;
 
@@ -84,9 +85,9 @@ public abstract class AbstractExecutor<T extends Job>
         }
 
         @SuppressWarnings("unchecked")
-        public B nodeService( final NodeService val )
+        public B snapshotService( final SnapshotService val )
         {
-            nodeService = val;
+            snapshotService = val;
             return (B) this;
         }
 

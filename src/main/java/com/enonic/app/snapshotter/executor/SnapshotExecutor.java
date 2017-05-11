@@ -23,7 +23,7 @@ public final class SnapshotExecutor
 
     public void execute( final SnapshotJob snapshotJob )
     {
-        doExecute( () -> this.nodeService.snapshot( SnapshotParamsFactory.create( snapshotJob ) ), snapshotJob );
+        doExecute( () -> this.snapshotService.snapshot( SnapshotParamsFactory.create( snapshotJob ) ), snapshotJob );
     }
 
     public static class Builder

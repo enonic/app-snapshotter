@@ -16,13 +16,13 @@ import com.enonic.app.snapshotter.model.Schedules;
 import com.enonic.xp.index.IndexService;
 import com.enonic.xp.node.DeleteSnapshotParams;
 import com.enonic.xp.node.DeleteSnapshotsResult;
-import com.enonic.xp.node.NodeService;
 import com.enonic.xp.node.SnapshotResult;
 import com.enonic.xp.node.SnapshotResults;
+import com.enonic.xp.snapshot.SnapshotService;
 
 public class CleanupExecutorTest
 {
-    private NodeService nodeService;
+    private SnapshotService snapshotService;
 
     private MailSender mailSender;
 
@@ -32,7 +32,7 @@ public class CleanupExecutorTest
     public void setUp()
         throws Exception
     {
-        this.nodeService = Mockito.mock( NodeService.class );
+        this.snapshotService = Mockito.mock( SnapshotService.class );
         this.mailSender = Mockito.mock( MailSender.class );
         this.indexService = Mockito.mock( IndexService.class );
     }
@@ -44,7 +44,7 @@ public class CleanupExecutorTest
         Mockito.when( this.indexService.isMaster() ).
             thenReturn( true );
 
-        Mockito.when( this.nodeService.listSnapshots() ).
+        Mockito.when( this.snapshotService.list() ).
             thenReturn( SnapshotResults.create().
                 add( SnapshotResult.create().
                     name( "myCleanTest-1" ).
@@ -56,7 +56,7 @@ public class CleanupExecutorTest
                     build() ).
                 build() );
 
-        Mockito.when( this.nodeService.deleteSnapshot( Mockito.isA( DeleteSnapshotParams.class ) ) ).
+        Mockito.when( this.snapshotService.delete( Mockito.isA( DeleteSnapshotParams.class ) ) ).
             thenReturn( DeleteSnapshotsResult.create().
                 add( "myCleanTest-1" ).
                 add( "myCleanTest-2" ).
@@ -65,7 +65,7 @@ public class CleanupExecutorTest
         final SnapshotterConfig config = createConfig();
 
         final CleanupExecutor executor = CleanupExecutor.create().
-            nodeService( this.nodeService ).
+            snapshotService( this.snapshotService ).
             mailSender( this.mailSender ).
             indexService( this.indexService ).
             config( config ).

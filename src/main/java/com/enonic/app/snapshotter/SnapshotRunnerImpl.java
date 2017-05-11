@@ -16,6 +16,7 @@ import com.enonic.app.snapshotter.scheduler.Scheduler;
 import com.enonic.app.snapshotter.scheduler.SchedulerImpl;
 import com.enonic.xp.index.IndexService;
 import com.enonic.xp.node.NodeService;
+import com.enonic.xp.snapshot.SnapshotService;
 
 @Component(immediate = true)
 public class SnapshotRunnerImpl
@@ -29,7 +30,7 @@ public class SnapshotRunnerImpl
 
     private SnapshotterConfig config;
 
-    private NodeService nodeService;
+    private SnapshotService snapshotService;
 
     private MailSender mailSender;
 
@@ -40,14 +41,14 @@ public class SnapshotRunnerImpl
     {
         this.scheduler = new SchedulerImpl();
         this.snapshotExecutor = SnapshotExecutor.create().
-            nodeService( this.nodeService ).
+            snapshotService( this.snapshotService ).
             config( this.config ).
             mailSender( this.mailSender ).
             indexService( this.indexService ).
             build();
 
         this.cleanupExecutor = CleanupExecutor.create().
-            nodeService( this.nodeService ).
+            snapshotService( this.snapshotService ).
             config( this.config ).
             mailSender( this.mailSender ).
             indexService( this.indexService ).
@@ -87,9 +88,9 @@ public class SnapshotRunnerImpl
     }
 
     @Reference
-    public void setNodeService( final NodeService nodeService )
+    public void setSnapshotService( final SnapshotService snapshotService )
     {
-        this.nodeService = nodeService;
+        this.snapshotService = snapshotService;
     }
 
     @Reference

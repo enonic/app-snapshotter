@@ -57,7 +57,12 @@ public class SnapshotJob
 
     public String name()
     {
-        return this.schedule.getName() + "_" + Instant.now().toString().toLowerCase();
+        return this.schedule.getName() + "_" + createTimestampString();
+    }
+
+    private String createTimestampString()
+    {
+        return Instant.now().toString().toLowerCase().replace( ":", "_" );
     }
 
     public static final class Builder
