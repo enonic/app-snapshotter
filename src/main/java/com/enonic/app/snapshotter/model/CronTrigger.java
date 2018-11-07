@@ -2,9 +2,7 @@ package com.enonic.app.snapshotter.model;
 
 import java.time.Duration;
 import java.time.ZonedDateTime;
-import java.util.Locale;
 
-import com.cronutils.descriptor.CronDescriptor;
 import com.cronutils.model.Cron;
 import com.cronutils.model.CronType;
 import com.cronutils.model.definition.CronDefinition;
@@ -17,8 +15,6 @@ public final class CronTrigger
     private final static CronDefinition DEFINITION = CronDefinitionBuilder.instanceDefinitionFor( CronType.UNIX );
 
     private final static CronParser PARSER = new CronParser( DEFINITION );
-
-    private final static CronDescriptor DESCRIPTOR = CronDescriptor.instance( Locale.UK );
 
     private final Cron cron;
 
@@ -39,7 +35,7 @@ public final class CronTrigger
     @Override
     public String toString()
     {
-        return DESCRIPTOR.describe( this.cron );
+        return this.cron.asString();
     }
 
     static CronTrigger from( final String cron )

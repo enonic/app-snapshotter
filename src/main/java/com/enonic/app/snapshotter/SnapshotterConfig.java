@@ -10,15 +10,6 @@ public interface SnapshotterConfig
 
     String cleanCron();
 
-    Boolean mailOnSuccess();
+    List<String> notifiers();
 
-    Boolean mailOnFailure();
-
-    List<String> from();
-
-    List<String> to();
-
-    boolean mailIsConfigured();
-
-    String hostname();
 }

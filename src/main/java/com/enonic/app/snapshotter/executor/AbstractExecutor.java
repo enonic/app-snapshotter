@@ -4,10 +4,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.enonic.app.snapshotter.SnapshotterConfig;
-import com.enonic.app.snapshotter.mail.MailSender;
 import com.enonic.app.snapshotter.model.Job;
+import com.enonic.app.snapshotter.notifier.Notifiers;
 import com.enonic.xp.index.IndexService;
-import com.enonic.xp.node.NodeService;
 import com.enonic.xp.snapshot.SnapshotService;
 
 public abstract class AbstractExecutor<T extends Job>
@@ -17,7 +16,7 @@ public abstract class AbstractExecutor<T extends Job>
 
     protected final SnapshotService snapshotService;
 
-    protected final MailSender mailSender;
+    protected final Notifiers notifiers;
 
     protected final IndexService indexService;
 
@@ -27,7 +26,7 @@ public abstract class AbstractExecutor<T extends Job>
     {
         config = builder.config;
         snapshotService = builder.snapshotService;
-        mailSender = builder.mailSender;
+        notifiers = builder.notifiers;
         indexService = builder.indexService;
     }
 
@@ -42,21 +41,12 @@ public abstract class AbstractExecutor<T extends Job>
         try
         {
             runnable.run();
-
-            if ( this.config.mailOnSuccess() && this.config.mailIsConfigured() )
-            {
-                this.mailSender.sendSuccess( job );
-            }
-
+            notifiers.success( job );
         }
         catch ( Exception e )
         {
             LOG.error( "Snapshotter job [" + job.description() + "] failed", e );
-
-            if ( this.config.mailOnFailure() && this.config.mailIsConfigured() )
-            {
-                this.mailSender.sendFailed( job, e );
-            }
+            notifiers.failed( job, e );
         }
     }
 
@@ -66,7 +56,7 @@ public abstract class AbstractExecutor<T extends Job>
 
         private SnapshotService snapshotService;
 
-        private MailSender mailSender;
+        private Notifiers notifiers;
 
         private IndexService indexService;
 
@@ -78,9 +68,9 @@ public abstract class AbstractExecutor<T extends Job>
         }
 
         @SuppressWarnings("unchecked")
-        public B mailSender( final MailSender mailSender )
+        public B notifiers( final Notifiers notifiers )
         {
-            this.mailSender = mailSender;
+            this.notifiers = notifiers;
             return (B) this;
         }
 

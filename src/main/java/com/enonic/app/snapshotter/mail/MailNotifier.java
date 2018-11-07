@@ -8,21 +8,28 @@ import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.enonic.app.snapshotter.SnapshotterConfig;
 import com.enonic.app.snapshotter.model.Job;
+import com.enonic.app.snapshotter.notifier.Notifier;
 import com.enonic.xp.mail.MailService;
 
 @Component(immediate = true)
-public class MailSenderImpl
-    implements MailSender
+public class MailNotifier
+    implements Notifier
 {
     private MailService mailService;
 
-    private SnapshotterConfig config;
+    private MailNotifierConfig config;
 
-    private final static Logger LOG = LoggerFactory.getLogger( MailSenderImpl.class );
+    private final static Logger LOG = LoggerFactory.getLogger( MailNotifier.class );
 
-    public void sendFailed( final Job job, final Exception e )
+    @Override
+    public String name()
+    {
+        return "mail";
+    }
+
+    @Override
+    public void failed( final Job job, final Exception e )
     {
         this.mailService.send( SnapshotMail.create().
             body( getStackTrace( e ) ).
@@ -32,7 +39,8 @@ public class MailSenderImpl
             build() );
     }
 
-    public void sendSuccess( final Job job )
+    @Override
+    public void success( final Job job )
     {
         try
         {
@@ -64,7 +72,7 @@ public class MailSenderImpl
     }
 
     @Reference
-    public void setConfig( final SnapshotterConfig config )
+    public void setConfig( final MailNotifierConfig config )
     {
         this.config = config;
     }

@@ -9,14 +9,14 @@ import com.enonic.app.snapshotter.model.Job;
 public class SubjectFactory
 {
 
-    static String createSubject( final Job job, final SnapshotterConfig config, final String state )
+    static String createSubject( final Job job, final MailNotifierConfig config, final String state )
     {
         StringBuilder builder = new StringBuilder();
         builder.append( "com.enonic.app.snapshotter" );
         builder.append( " - " );
         builder.append( "Host: " + ( config.hostname() != null ? config.hostname() : getHost() ) );
         builder.append( " - " );
-        builder.append( "Job: " + job.description() );
+        builder.append( "job: " + job.description() );
         builder.append( " - " );
         builder.append( " Status: " + state );
         return builder.toString();

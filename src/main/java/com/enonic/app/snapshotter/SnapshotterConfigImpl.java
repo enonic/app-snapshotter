@@ -5,10 +5,6 @@ import java.util.Map;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Deactivate;
-
-import com.google.common.base.Strings;
-import com.google.common.collect.Lists;
 
 import com.enonic.app.snapshotter.model.Schedules;
 import com.enonic.app.snapshotter.model.SchedulesParser;
@@ -18,6 +14,7 @@ import com.enonic.xp.config.Configuration;
 
 @Component(configurationPid = "com.enonic.app.snapshotter")
 public class SnapshotterConfigImpl
+    extends AbstractBaseConfig
     implements SnapshotterConfig
 {
     private Configuration config;
@@ -44,63 +41,22 @@ public class SnapshotterConfigImpl
     }
 
     @Override
+    public Configuration getConfig()
+    {
+        return config;
+    }
+
+    @Override
     public String cleanCron()
     {
         return this.config.get( "cleanup.cron" );
     }
 
     @Override
-    public Boolean mailOnSuccess()
+    public List<String> notifiers()
     {
-        return Boolean.valueOf( this.config.get( "mail.onSuccess" ) );
+        return doGetCommaSeparated( "notifiers" );
     }
 
-    @Override
-    public Boolean mailOnFailure()
-    {
-        return Boolean.valueOf( this.config.get( "mail.onFailure" ) );
-    }
 
-    @Override
-    public List<String> from()
-    {
-        return doGetCommaSeparated( "mail.from" );
-    }
-
-    @Override
-    public List<String> to()
-    {
-        return doGetCommaSeparated( "mail.to" );
-    }
-
-    @Override
-    public String hostname()
-    {
-        return this.config.getOrDefault( "mail.hostname", null );
-    }
-
-    @Override
-    public boolean mailIsConfigured()
-    {
-        return !this.to().isEmpty() && !this.from().isEmpty();
-    }
-
-    private List<String> doGetCommaSeparated( final String property )
-    {
-        final List<String> entries = Lists.newArrayList();
-
-        if ( this.config.exists( property ) )
-        {
-            final String[] split = this.config.get( property ).split( "," );
-
-            for ( final String entry : split )
-            {
-                if ( !Strings.isNullOrEmpty( entry ) )
-                {
-                    entries.add( entry );
-                }
-            }
-        }
-        return entries;
-    }
 }

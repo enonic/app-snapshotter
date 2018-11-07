@@ -1,21 +1,27 @@
 package com.enonic.app.snapshotter;
 
+import java.util.List;
+
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.enonic.app.snapshotter.executor.CleanupExecutor;
 import com.enonic.app.snapshotter.executor.SnapshotExecutor;
-import com.enonic.app.snapshotter.mail.MailSender;
 import com.enonic.app.snapshotter.model.CleanupJob;
 import com.enonic.app.snapshotter.model.Schedule;
 import com.enonic.app.snapshotter.model.Schedules;
 import com.enonic.app.snapshotter.model.SnapshotJob;
+import com.enonic.app.snapshotter.notifier.Notifier;
+import com.enonic.app.snapshotter.notifier.Notifiers;
 import com.enonic.app.snapshotter.scheduler.Scheduler;
 import com.enonic.app.snapshotter.scheduler.SchedulerImpl;
 import com.enonic.xp.index.IndexService;
-import com.enonic.xp.node.NodeService;
 import com.enonic.xp.snapshot.SnapshotService;
 
 @Component(immediate = true)
@@ -32,25 +38,50 @@ public class SnapshotRunnerImpl
 
     private SnapshotService snapshotService;
 
-    private MailSender mailSender;
+    private Notifiers notifiers;
 
     private IndexService indexService;
+
+    private List<String> configuredNotifiers;
+
+    private final static Logger LOG = LoggerFactory.getLogger( SnapshotRunnerImpl.class );
 
     @Activate
     public void activate()
     {
+        this.notifiers = new Notifiers();
+        this.configuredNotifiers = this.config.notifiers();
+        doStart();
+    }
+
+    private synchronized void doStart()
+    {
+        if ( this.scheduler != null )
+        {
+            LOG.info( "Already started sir, nothing to do here" );
+            return;
+        }
+
+        if ( !this.notifiers.hasAll( this.configuredNotifiers ) )
+        {
+            LOG.info( "Waiting for notifiers: " + this.configuredNotifiers );
+            return;
+        }
+
+        LOG.info( "All notifiers configured, starting schedules" );
+
         this.scheduler = new SchedulerImpl();
         this.snapshotExecutor = SnapshotExecutor.create().
             snapshotService( this.snapshotService ).
             config( this.config ).
-            mailSender( this.mailSender ).
+            notifiers( this.notifiers ).
             indexService( this.indexService ).
             build();
 
         this.cleanupExecutor = CleanupExecutor.create().
             snapshotService( this.snapshotService ).
             config( this.config ).
-            mailSender( this.mailSender ).
+            notifiers( this.notifiers ).
             indexService( this.indexService ).
             build();
 
@@ -62,7 +93,6 @@ public class SnapshotRunnerImpl
 
     private void scheduleSnapshotting( final Schedules schedules )
     {
-
         for ( final Schedule schedule : schedules )
         {
             this.scheduler.schedule( SnapshotJob.create().
@@ -81,12 +111,17 @@ public class SnapshotRunnerImpl
             build() );
     }
 
+    @SuppressWarnings("unused")
     @Deactivate
     public void deactivate()
     {
-        this.scheduler.unschedule();
+        if ( this.scheduler != null )
+        {
+            this.scheduler.unschedule();
+        }
     }
 
+    @SuppressWarnings("unused")
     @Reference
     public void setSnapshotService( final SnapshotService snapshotService )
     {
@@ -99,10 +134,23 @@ public class SnapshotRunnerImpl
         this.config = config;
     }
 
-    @Reference
-    public void setMailSender( final MailSender mailSender )
+    @SuppressWarnings("unused")
+    @Reference(cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.DYNAMIC)
+    public void addNotifier( final Notifier notifier )
     {
-        this.mailSender = mailSender;
+        if ( this.configuredNotifiers.contains( notifier.name() ) )
+        {
+            this.notifiers.add( notifier );
+        }
+
+        doStart();
+    }
+
+    @SuppressWarnings("unused")
+    public void removeNotifier( final Notifier notifier )
+    {
+        this.notifiers.remove( notifier );
+        // TODO STOP IF NOT ENOUGHT NOTIFIERS
     }
 
     @Reference

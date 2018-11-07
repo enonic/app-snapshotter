@@ -8,11 +8,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import com.google.common.collect.Lists;
+
 import com.enonic.app.snapshotter.SnapshotterConfig;
-import com.enonic.app.snapshotter.mail.MailSender;
 import com.enonic.app.snapshotter.model.CleanupJob;
 import com.enonic.app.snapshotter.model.Schedule;
 import com.enonic.app.snapshotter.model.Schedules;
+import com.enonic.app.snapshotter.notifier.Notifiers;
 import com.enonic.xp.index.IndexService;
 import com.enonic.xp.node.DeleteSnapshotParams;
 import com.enonic.xp.node.DeleteSnapshotsResult;
@@ -24,7 +26,7 @@ public class CleanupExecutorTest
 {
     private SnapshotService snapshotService;
 
-    private MailSender mailSender;
+    private Notifiers mailSender;
 
     private IndexService indexService;
 
@@ -33,7 +35,7 @@ public class CleanupExecutorTest
         throws Exception
     {
         this.snapshotService = Mockito.mock( SnapshotService.class );
-        this.mailSender = Mockito.mock( MailSender.class );
+        this.mailSender = Mockito.mock( Notifiers.class );
         this.indexService = Mockito.mock( IndexService.class );
     }
 
@@ -66,7 +68,7 @@ public class CleanupExecutorTest
 
         final CleanupExecutor executor = CleanupExecutor.create().
             snapshotService( this.snapshotService ).
-            mailSender( this.mailSender ).
+            notifiers( this.mailSender ).
             indexService( this.indexService ).
             config( config ).
             build();
@@ -101,39 +103,9 @@ public class CleanupExecutorTest
             }
 
             @Override
-            public Boolean mailOnSuccess()
+            public List<String> notifiers()
             {
-                return true;
-            }
-
-            @Override
-            public Boolean mailOnFailure()
-            {
-                return true;
-            }
-
-            @Override
-            public List<String> from()
-            {
-                return null;
-            }
-
-            @Override
-            public List<String> to()
-            {
-                return null;
-            }
-
-            @Override
-            public String hostname()
-            {
-                return null;
-            }
-
-            @Override
-            public boolean mailIsConfigured()
-            {
-                return false;
+                return Lists.newArrayList();
             }
         };
     }
