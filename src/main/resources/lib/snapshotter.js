@@ -6,3 +6,12 @@ exports.schedules = function () {
     return __.toNativeObject(result);
 };
 
+
+exports.notifiers = function () {
+    var result = bean.getNotifiers();
+    return __.toNativeObject(result);
+};
+
+exports.testNotify = function (name) {
+    bean.notify(name);
+};

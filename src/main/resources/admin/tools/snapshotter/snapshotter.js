@@ -6,17 +6,23 @@ exports.get = function (req) {
 
     var view = resolve('snapshotter.html');
 
-    var result = snapshotter.schedules();
+    var schedulesResult = snapshotter.schedules();
+    var notifiersResult = snapshotter.notifiers();
 
-    result.schedules.forEach(function (schedule) {
+
+    schedulesResult.schedules.forEach(function (schedule) {
         var date = new Date(Date.parse(schedule.nextExecTime));
         schedule.readable = date.toLocaleDateString() + " " + date.toLocaleTimeString();
     });
-    
+
     var model = {
         jsUrl: portal.assetUrl({path: "/js/main.js"}),
         assetsUrl: portal.assetUrl({path: ""}),
-        data: result
+        svcUrl: portal.serviceUrl({service: 'Z'}).slice(0, -1),
+        data: {
+            schedules: schedulesResult.schedules,
+            notifiers: notifiersResult.notifiers
+        }
     };
 
     return {

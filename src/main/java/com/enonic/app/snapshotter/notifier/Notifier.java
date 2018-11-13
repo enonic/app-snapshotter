@@ -1,5 +1,7 @@
 package com.enonic.app.snapshotter.notifier;
 
+import java.util.Map;
+
 import com.enonic.app.snapshotter.model.Job;
 
 public interface Notifier
@@ -9,4 +11,8 @@ public interface Notifier
     void success( final Job job );
 
     void failed( final Job job, final Exception e );
+
+    void test( final String message);
+
+    Map<String, Object> getPublicConfig();
 }

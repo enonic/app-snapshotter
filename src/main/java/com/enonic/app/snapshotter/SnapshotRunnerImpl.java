@@ -54,6 +54,11 @@ public class SnapshotRunnerImpl
         doStart();
     }
 
+    public Notifiers getNotifiers()
+    {
+        return this.notifiers;
+    }
+
     private synchronized void doStart()
     {
         if ( this.scheduler != null )

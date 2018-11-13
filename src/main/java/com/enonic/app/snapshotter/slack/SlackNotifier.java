@@ -1,11 +1,15 @@
 package com.enonic.app.snapshotter.slack;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.collect.Maps;
 import com.webcerebrium.slack.Notification;
 import com.webcerebrium.slack.NotificationException;
 import com.webcerebrium.slack.SlackMessage;
@@ -43,7 +47,7 @@ public class SlackNotifier
             sendSlackMessage( SlackMessageBuilder.create().
                 project( config.project() ).
                 failed( false ).
-                job( job ).
+                description( job.description() ).
                 build().
                 execute() );
         }
@@ -57,10 +61,31 @@ public class SlackNotifier
             sendSlackMessage( SlackMessageBuilder.create().
                 project( config.project() ).
                 failed( true ).
-                job( job ).
+                description( job.description() ).
                 build().
                 execute() );
         }
+    }
+
+    @Override
+    public void test( final String message )
+    {
+        sendSlackMessage( SlackMessageBuilder.create().
+            project( config.project() ).
+            failed( false ).
+            description( message ).
+            build().
+            execute() );
+    }
+
+    @Override
+    public Map<String, Object> getPublicConfig()
+    {
+        final HashMap<String, Object> configMap = Maps.newHashMap();
+        configMap.put( "reportOnFailure", this.config.reportOnFailure() );
+        configMap.put( "reportOnSuccess", this.config.reportOnSuccess() );
+        configMap.put( "project", this.config.project() );
+        return configMap;
     }
 
     private void sendSlackMessage( final SlackMessage message )

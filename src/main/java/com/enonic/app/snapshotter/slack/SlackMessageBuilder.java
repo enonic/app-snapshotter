@@ -4,20 +4,18 @@ import com.google.common.collect.ImmutableSet;
 import com.webcerebrium.slack.SlackMessage;
 import com.webcerebrium.slack.SlackMessageAttachment;
 
-import com.enonic.app.snapshotter.model.Job;
-
 public class SlackMessageBuilder
 {
     private final String project;
 
-    private final Job job;
+    private final String description;
 
     private final Boolean failed;
 
     private SlackMessageBuilder( final Builder builder )
     {
         this.project = builder.project;
-        this.job = builder.job;
+        this.description = builder.description;
         this.failed = builder.failed;
     }
 
@@ -57,7 +55,7 @@ public class SlackMessageBuilder
 
     private String createTitle()
     {
-        return this.failed ? "Snapshot [" + job.description() + "[ failed" : "Snapshot [" + job.description() + "] success";
+        return this.failed ? "Snapshot [" + description + "[ failed" : "Snapshot [" + description + "] success";
     }
 
     public final static class Builder
@@ -66,7 +64,7 @@ public class SlackMessageBuilder
 
         private boolean failed = false;
 
-        private Job job;
+        private String description;
 
         public Builder()
         {
@@ -85,9 +83,9 @@ public class SlackMessageBuilder
             return this;
         }
 
-        public Builder job( final Job job )
+        public Builder description( final String description )
         {
-            this.job = job;
+            this.description = description;
             return this;
         }
 

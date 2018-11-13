@@ -13,6 +13,19 @@ public class Notifiers
 {
     private final List<Notifier> notifiers = Lists.newArrayList();
 
+    public Notifier get( final String name )
+    {
+        for ( final Notifier n : notifiers )
+        {
+            if ( name.equals( n.name() ) )
+            {
+                return n;
+            }
+        }
+
+        return null;
+    }
+
     public void success( final Job job )
     {
         this.notifiers.forEach( n -> n.success( job ) );
