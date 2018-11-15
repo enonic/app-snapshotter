@@ -52,7 +52,7 @@ The cleanup schedule is set up to run every hour by default. This will delete sn
 
 ### Notifiers
 
-Provides a comma-separated list of notifiers, e.g ``notifiers=slack,mail
+Provides a comma-separated list of notifiers, e.g ``notifiers=slack,mail``
 
 #### Slack
 
