@@ -30,13 +30,10 @@ As default, three schedules are added; hourly, daily and weekly:
     snapshot.weekly.enabled=true
 
     cleanup.cron=0 * * * *
+    
+    notifiers=
 
-    mail.to=
-    mail.from=
-    mail.onSuccess=false
-    mail.onFailure=true
-    #mail.hostname=
-
+  
 The ``cron``-property is a string in Unix cron format (http://www.nncron.ru/help/EN/working/cron-format.htm)
 
 The ``keep``-property is given as a java Duration parsable string (https://en.wikipedia.org/wiki/ISO_8601#Durations) - snapshots from the schedule older than this will be automatically deleted
@@ -53,9 +50,23 @@ To disable a default schedule, just set enabled to false, e.g ``snapshot.hourly.
 
 The cleanup schedule is set up to run every hour by default. This will delete snapshots that are outside the keep-range of the schedules. This schedule can be configured by changing the ``cleanup.cron``
 
-### Mail
+### Notifiers
 
-If you Enonic XP installation is configured for mail (http://xp.readthedocs.io/en/stable/operations/configuration.html#mail-configuration) the Snapshotter app can be configured for sending email when snapshot operations are done. Usually you want to receive a mail if something goes wrong (``mail.onFailure=true``) but you can also set it up to send a mail when everything is ok (``mail.onSuccess=true``)
+Provides a comma-separated list of notifiers, e.g ``notifiers=slack,mail
+
+#### Slack
+
+If you want to be notified in a slack channel, this be be configured in file ``com.enonic.app.snapshotter.slack``
+
+    slackWebhook = https://hooks.slack.com/services/<SomeSlackHookUrl>
+    project = <MyHost1>
+    reportOnSuccess = false
+    reportOnFailure = true
+
+
+#### Mail
+
+If you Enonic XP installation is configured for mail (http://xp.readthedocs.io/en/stable/operations/configuration.html#mail-configuration) the Snapshotter app can be configured for sending email when snapshot operations are done. Usually you want to receive a mail if something goes wrong (``mail.onFailure=true``) but you can also set it up to send a mail when everything is ok (``mail.onSuccess=true``). The mail notifier is to be configured in file ``com.enonic.app.snapshotter.mail``
 
 The ``mail.to`` and ``mail.from`` should be comma-separated list of email-adresses.
 
