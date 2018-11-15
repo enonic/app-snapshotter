@@ -71,6 +71,6 @@ If you Enonic XP installation is configured for mail (http://xp.readthedocs.io/e
     mailOnSuccess=false
     mailOnFailure=true
     from=some@email.com
-    to=other@email.com
+    to=other@email.com,operations@bbc.co.uk
     hostname=MyHost
 
