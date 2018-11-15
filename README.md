@@ -68,7 +68,9 @@ If you want to be notified in a slack channel, this be be configured in file ``c
 
 If you Enonic XP installation is configured for mail (http://xp.readthedocs.io/en/stable/operations/configuration.html#mail-configuration) the Snapshotter app can be configured for sending email when snapshot operations are done. Usually you want to receive a mail if something goes wrong (``mail.onFailure=true``) but you can also set it up to send a mail when everything is ok (``mail.onSuccess=true``). The mail notifier is to be configured in file ``com.enonic.app.snapshotter.mail``
 
-The ``mail.to`` and ``mail.from`` should be comma-separated list of email-adresses.
-
-The ``mail.hostname`` will override the automatic host-name detection if desired.
+    mailOnSuccess=false
+    mailOnFailure=true
+    from=some@email.com
+    to=other@email.com
+    hostname=MyHost
 
