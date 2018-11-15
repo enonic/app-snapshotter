@@ -3,12 +3,10 @@ package com.enonic.app.snapshotter.mail;
 import java.io.IOException;
 import java.net.InetAddress;
 
-import com.enonic.app.snapshotter.SnapshotterConfig;
 import com.enonic.app.snapshotter.model.Job;
 
-public class SubjectFactory
+class SubjectFactory
 {
-
     static String createSubject( final Job job, final MailNotifierConfig config, final String state )
     {
         StringBuilder builder = new StringBuilder();
@@ -33,9 +31,4 @@ public class SubjectFactory
             return "UNKNOWN";
         }
     }
-
-
-
-
-
 }

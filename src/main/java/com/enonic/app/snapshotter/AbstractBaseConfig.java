@@ -9,7 +9,7 @@ import com.enonic.xp.config.Configuration;
 
 public abstract class AbstractBaseConfig
 {
-    public abstract Configuration getConfig();
+    protected abstract Configuration getConfig();
 
     protected List<String> doGetCommaSeparated( final String property )
     {

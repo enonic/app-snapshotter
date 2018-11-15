@@ -7,7 +7,7 @@ plugins {
 
 app {
     name = 'com.enonic.app.snapshotter'
-    group = 'com.enonic.xp'
+    group = 'com.enonic.app'
     displayName = 'Snapshotter'
     vendorName = 'Enonic AS'
     vendorUrl = 'http://enonic.com'

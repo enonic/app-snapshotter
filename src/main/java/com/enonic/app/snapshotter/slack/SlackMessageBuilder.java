@@ -55,7 +55,7 @@ public class SlackMessageBuilder
 
     private String createTitle()
     {
-        return this.failed ? "Snapshot [" + description + "[ failed" : "Snapshot [" + description + "] success";
+        return this.failed ? "Snapshot [" + description + "] failed" : "Snapshot [" + description + "] success";
     }
 
     public final static class Builder
@@ -66,7 +66,7 @@ public class SlackMessageBuilder
 
         private String description;
 
-        public Builder()
+        Builder()
         {
         }
 
