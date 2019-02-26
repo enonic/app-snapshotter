@@ -20,7 +20,7 @@ public class CachedSnapshotsResultService
     private SnapshotService snapshotService;
 
     private final Cache<String, SnapshotResults> snapshotCache =
-        CacheBuilder.newBuilder().maximumSize( 1 ).expireAfterAccess( 2, TimeUnit.MINUTES ).build();
+        CacheBuilder.newBuilder().maximumSize( 1 ).refreshAfterWrite( 5, TimeUnit.MINUTES ).build();
 
     public SnapshotResults get()
     {
@@ -33,7 +33,7 @@ public class CachedSnapshotsResultService
             throw new RuntimeException( "cannot get snapshots", e );
         }
     }
-    
+
     @SuppressWarnings("unused")
     @Reference
     public void setSnapshotService( final SnapshotService snapshotService )
