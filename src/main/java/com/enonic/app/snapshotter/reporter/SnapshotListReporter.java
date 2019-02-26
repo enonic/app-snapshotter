@@ -9,7 +9,7 @@ import com.enonic.xp.status.JsonStatusReporter;
 import com.enonic.xp.status.StatusReporter;
 
 @Component(immediate = true, service = StatusReporter.class)
-public class SnapshotSummaryReporter
+public class SnapshotListReporter
     extends JsonStatusReporter
 {
     private SnapshotResultsService resultsService;
@@ -19,7 +19,7 @@ public class SnapshotSummaryReporter
     {
         try
         {
-            return new SnapshotReport( resultsService ).summary();
+            return new SnapshotReport( resultsService ).list();
         }
         catch ( Exception e )
         {
@@ -30,7 +30,7 @@ public class SnapshotSummaryReporter
     @Override
     public String getName()
     {
-        return "com.enonic.app.snapshotter.latest";
+        return "com.enonic.app.snapshotter.list";
     }
 
     @SuppressWarnings("unused")

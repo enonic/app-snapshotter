@@ -63,7 +63,7 @@ public class SnapshotRunnerImpl
     {
         if ( this.scheduler != null )
         {
-            LOG.info( "Already started sir, nothing to do here" );
+            LOG.info( "Scheduler already started" );
             return;
         }
 
