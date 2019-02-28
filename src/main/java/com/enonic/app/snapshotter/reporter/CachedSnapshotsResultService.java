@@ -4,6 +4,7 @@ package com.enonic.app.snapshotter.reporter;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -19,8 +20,24 @@ public class CachedSnapshotsResultService
 {
     private SnapshotService snapshotService;
 
-    private final Cache<String, SnapshotResults> snapshotCache =
-        CacheBuilder.newBuilder().maximumSize( 1 ).refreshAfterWrite( 5, TimeUnit.MINUTES ).build();
+    private Cache<String, SnapshotResults> snapshotCache;
+
+    private int duration = 5;
+
+    private TimeUnit unit = TimeUnit.MINUTES;
+
+    public CachedSnapshotsResultService()
+    {
+    }
+
+    @Activate
+    public void activate()
+    {
+        this.snapshotCache = CacheBuilder.newBuilder().
+            maximumSize( 1 ).
+            expireAfterWrite( duration, unit ).
+            build();
+    }
 
     public SnapshotResults get()
     {
@@ -39,5 +56,20 @@ public class CachedSnapshotsResultService
     public void setSnapshotService( final SnapshotService snapshotService )
     {
         this.snapshotService = snapshotService;
+    }
+
+    public void setSnapshotCache( final Cache<String, SnapshotResults> snapshotCache )
+    {
+        this.snapshotCache = snapshotCache;
+    }
+
+    public void setDuration( final int duration )
+    {
+        this.duration = duration;
+    }
+
+    public void setUnit( final TimeUnit unit )
+    {
+        this.unit = unit;
     }
 }
