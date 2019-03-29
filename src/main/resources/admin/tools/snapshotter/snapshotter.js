@@ -1,6 +1,6 @@
 var snapshotter = require('/lib/snapshotter');
 var portal = require('/lib/xp/portal');
-var mustache = require('/lib/xp/mustache');
+var mustache = require('/lib/mustache');
 
 exports.get = function (req) {
 
