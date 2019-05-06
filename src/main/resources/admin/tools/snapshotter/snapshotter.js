@@ -11,7 +11,8 @@ exports.get = function (req) {
 
 
     schedulesResult.schedules.forEach(function (schedule) {
-        var date = new Date(Date.parse(schedule.nextExecTime));
+        var dateStr = schedule.nextExecTime.match(/^[^.]*/g)[0];
+        var date = new Date(Date.parse(dateStr));
         schedule.readable = date.toLocaleDateString() + " " + date.toLocaleTimeString();
     });
 
