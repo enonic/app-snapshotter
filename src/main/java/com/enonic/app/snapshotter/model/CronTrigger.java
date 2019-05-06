@@ -29,7 +29,7 @@ public final class CronTrigger
     public Duration nextExecution()
     {
         final ZonedDateTime now = ZonedDateTime.now();
-        return this.executionTime.timeToNextExecution( now );
+        return this.executionTime.timeToNextExecution( now ).get();
     }
 
     @Override
