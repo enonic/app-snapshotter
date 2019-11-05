@@ -56,7 +56,7 @@ Provides a comma-separated list of notifiers, e.g ``notifiers=slack,mail``
 
 #### Slack
 
-If you want to be notified in a slack channel, this be be configured in file ``com.enonic.app.snapshotter.slack``
+If you want to be notified in a slack channel, this be be configured in file ``com.enonic.app.snapshotter.slack.cfg``
 
     slackWebhook = https://hooks.slack.com/services/<SomeSlackHookUrl>
     project = <MyHost1>
