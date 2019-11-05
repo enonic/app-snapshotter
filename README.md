@@ -11,7 +11,7 @@ NOTE: You will still need a way to do backups of the blobs (files) - this is jus
 
 ## Config
 
-This application can be configured in file ``$XP_HOME/config/com.enonic.app.snapshotter``
+This application can be configured in file ``$XP_HOME/config/com.enonic.app.snapshotter.cfg``
 
 ### Schedules
 
