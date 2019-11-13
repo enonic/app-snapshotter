@@ -76,7 +76,7 @@ If you Enonic XP installation is configured for mail (http://xp.readthedocs.io/e
 
 ## Monitoring
 
-The snapshotter app adds two endpoints to the monitor api:
+The snapshotter app adds two endpoints to the statistics-endpoint (https://developer.enonic.com/docs/xp/stable/runtime/statistics):
 
     "com.enonic.app.snapshotter.latest"
     "com.enonic.app.snapshotter.list"
