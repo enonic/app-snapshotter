@@ -74,3 +74,12 @@ If you Enonic XP installation is configured for mail (http://xp.readthedocs.io/e
     to=other@email.com,operations@bbc.co.uk
     hostname=MyHost
 
+## Monitoring
+
+The snapshotter app adds two endpoints to the monitor api:
+
+    "com.enonic.app.snapshotter.latest"
+    "com.enonic.app.snapshotter.list"
+
+
+Use this to ensure that the age of the newest snapshot is not older than expected
