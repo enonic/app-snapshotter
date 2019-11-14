@@ -82,4 +82,19 @@ The snapshotter app adds two endpoints to the statistics-endpoint (https://devel
     "com.enonic.app.snapshotter.list"
 
 
-Use this to ensure that the age of the newest snapshot is not older than expected
+The first is very useful to ensure that the age of the newest snapshot is not older than expected:
+
+    {
+    indices: [
+        "search-com.enonic.cms.default",
+        "storage-com.enonic.cms.default",
+        "search-system-repo",
+        "storage-system-repo"
+    ],
+    timestamp: "2019-11-14T09:01:00.152Z",
+    age: 9,
+    name: "hourly_2019-11-14t09_01_00.001371z"
+    }
+
+This age-value is the age of the last snapshot in minutes, typically used to trigger an alarm if > e.g 80 minutes, depending on your configured frequency
+
