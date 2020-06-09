@@ -1,34 +1,71 @@
-var snapshotter = require('/lib/snapshotter');
-var portal = require('/lib/xp/portal');
-var mustache = require('/lib/mustache');
+var libs = {
+    snapshotter: require('/lib/snapshotter'),
+    portal: require('/lib/xp/portal'),
+    mustache: require('/lib/mustache'),
+    cron: require('/lib/cron'),
+    configParser: require('/lib/config-parser')
+};
+
+function buildConfigFromMap(configAsMap) {
+    var result = [];
+
+    Object.keys(configAsMap).forEach(function (key) {
+        result.push({
+            key: key,
+            value: configAsMap[key]
+        })
+    });
+
+    return result;
+}
 
 exports.get = function (req) {
 
     var view = resolve('snapshotter.html');
 
-    var schedulesResult = snapshotter.schedules();
-    var notifiersResult = snapshotter.notifiers();
+    var appConfig = libs.snapshotter.getConfig();
 
+    var schedulesResult = libs.configParser.parseSnapshots(appConfig);
 
-    schedulesResult.schedules.forEach(function (schedule) {
-        var dateStr = schedule.nextExecTime.match(/^[^.]*/g)[0];
-        var date = new Date(Date.parse(dateStr));
-        schedule.readable = date.toLocaleDateString() + " " + date.toLocaleTimeString();
+    var cronJobDetails = {};
+    schedulesResult.forEach(function (schedule) {
+        cronJobDetails[schedule.name] = schedule;
+    });
+
+    var notifiers = libs.configParser.parseNotifiers(appConfig);
+
+    notifiers.forEach(function (notifier) {
+        notifier.config = buildConfigFromMap(notifier.config);
+    });
+
+    var cronJobsResult = libs.cron.list();
+
+    var cronJobs = [];
+    cronJobsResult.jobs.forEach(function (job) {
+        if (cronJobDetails[job.name]) {
+            job.keep = cronJobDetails[job.name].keep;
+
+            var dateStr = job.nextExecTime.match(/^[^.]*/g)[0];
+            var date = new Date(Date.parse(dateStr));
+            job.readable = date.toLocaleDateString() + " " + date.toLocaleTimeString();
+
+            cronJobs.push(job);
+        }
     });
 
     var model = {
-        jsUrl: portal.assetUrl({path: "/js/main.js"}),
-        assetsUrl: portal.assetUrl({path: ""}),
-        svcUrl: portal.serviceUrl({service: 'Z'}).slice(0, -1),
+        jsUrl: libs.portal.assetUrl({path: "/js/snapshotter.js"}),
+        assetsUrl: libs.portal.assetUrl({path: ""}),
+        svcUrl: libs.portal.serviceUrl({service: 'Z'}).slice(0, -1),
         data: {
-            schedules: schedulesResult.schedules,
-            notifiers: notifiersResult.notifiers
+            cronJobs: cronJobs,
+            notifiers: notifiers
         }
     };
 
     return {
         contentType: 'text/html',
-        body: mustache.render(view, model)
+        body: libs.mustache.render(view, model)
     };
 
 };

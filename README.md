@@ -18,7 +18,7 @@ This application can be configured in file ``$XP_HOME/config/com.enonic.app.snap
 As default, three schedules are added; hourly, daily and weekly:
 
     snapshot.hourly.cron=1 * * * *
-    snapshot.hourly.keep=PT24H
+    snapshot.hourly.keep=PT48H
     snapshot.hourly.enabled=true
 
     snapshot.daily.cron=0 1 * * *
@@ -30,17 +30,15 @@ As default, three schedules are added; hourly, daily and weekly:
     snapshot.weekly.enabled=true
 
     cleanup.cron=0 * * * *
-    
-    notifiers=
 
   
 The ``cron``-property is a string in Unix cron format (http://www.nncron.ru/help/EN/working/cron-format.htm)
 
 The ``keep``-property is given as a java Duration parsable string (https://en.wikipedia.org/wiki/ISO_8601#Durations) - snapshots from the schedule older than this will be automatically deleted
 
-You can add new, named schedules if needed:
+You can add new named schedules if needed:
 
-    snapshot.every-ten-minutes.cron=0/10 * * * *
+    snapshot.every-ten-minutes.cron=*/10 * * * *
     snapshot.every-ten-minutes.keep=PT2H
     snapshot.every-ten-minutes.enabled=true
 
@@ -52,27 +50,24 @@ The cleanup schedule is set up to run every hour by default. This will delete sn
 
 ### Notifiers
 
-Provides a comma-separated list of notifiers, e.g ``notifiers=slack,mail``
-
 #### Slack
 
-If you want to be notified in a slack channel, this be be configured in file ``com.enonic.app.snapshotter.slack.cfg``
+If you want to be notified in a slack channel, this to be configured in file ``com.enonic.app.snapshotter.cfg``
 
-    slackWebhook = https://hooks.slack.com/services/<SomeSlackHookUrl>
-    project = <MyHost1>
-    reportOnSuccess = false
-    reportOnFailure = true
+    notifier.slack.slackWebhook = https://hooks.slack.com/services/<SomeSlackHookUrl>
+    notifier.slack.project = <MyHost1>
+    notifier.slack.reportOnSuccess = false
+    notifier.slack.reportOnFailure = true
 
 
 #### Mail
 
-If you Enonic XP installation is configured for mail (http://xp.readthedocs.io/en/stable/operations/configuration.html#mail-configuration) the Snapshotter app can be configured for sending email when snapshot operations are done. Usually you want to receive a mail if something goes wrong (``mail.onFailure=true``) but you can also set it up to send a mail when everything is ok (``mail.onSuccess=true``). The mail notifier is to be configured in file ``com.enonic.app.snapshotter.mail``
+If your Enonic XP installation is configured for mail (http://xp.readthedocs.io/en/stable/operations/configuration.html#mail-configuration) the Snapshotter app can be configured for sending email when snapshot operations are done. Usually you want to receive a mail if something goes wrong (``notifier.mail.onFailure=true``) but you can also set it up to send a mail when everything is ok (``notifier.mail.onSuccess=true``). The mail notifier is to be configured in file ``com.enonic.app.snapshotter.cfg``
 
-    mailOnSuccess=false
-    mailOnFailure=true
-    from=some@email.com
-    to=other@email.com,operations@bbc.co.uk
-    hostname=MyHost
+    notifier.mail.onSuccess=false
+    notifier.mail.onFailure=true
+    notifier.mail.from=some@email.com
+    notifier.mail.to=other@email.com,operations@bbc.co.uk
 
 ## Monitoring
 
@@ -98,3 +93,11 @@ The first is very useful to ensure that the age of the newest snapshot is not ol
 
 This age-value is the age of the last snapshot in minutes, typically used to trigger an alarm if > e.g 80 minutes, depending on your configured frequency
 
+### Migration instructions
+
+- Starting from version 3.0.0 ``app-snapshotter`` is compatible with ``XP`` version 7.3.x and newer
+- The configurations of Slack and Mail notifications were moved to config file of application ``$XP_HOME/config/com.enonic.app.snapshotter.cfg``. 
+- The configuration files ``$XP_HOME/config/com.enonic.app.snapshotter.slack.cfg`` and ``$XP_HOME/config/com.enonic.app.snapshotter.mail.cfg`` were removed
+- The ``notifiers`` configuration property was removed from ``$XP_HOME/config/com.enonic.app.snapshotter.cfg`` file.
+- The ``mail.hostname`` configuration property was removed from ``$XP_HOME/config/com.enonic.app.snapshotter.mail.cfg`` file.
+- In order to enable ``Slack`` or ``Mail`` notifiers you should use instructions from section ``Notifiers`` of this document.
