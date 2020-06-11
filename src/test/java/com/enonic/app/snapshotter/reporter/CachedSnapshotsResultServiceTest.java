@@ -3,8 +3,8 @@ package com.enonic.app.snapshotter.reporter;
 import java.time.Instant;
 import java.util.concurrent.TimeUnit;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import com.enonic.xp.node.SnapshotResult;
@@ -18,7 +18,7 @@ public class CachedSnapshotsResultServiceTest
 
     private SnapshotService snapshotService;
 
-    @Before
+    @BeforeEach
     public void setup()
     {
         this.snapshotService = Mockito.mock( SnapshotService.class );

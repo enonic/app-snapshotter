@@ -4,6 +4,5 @@
   <description>Scheduled snapshotting</description>
   <allow>
     <principal>role:system.admin</principal>
-    <principal>role:system.admin</principal>
   </allow>
 </tool>

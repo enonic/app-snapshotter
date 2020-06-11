@@ -1,8 +1,8 @@
 # app-snapshotter
 
-The snapshotter-app enables automatic snapshotting of your Enonic XP repository indexes - see http://xp.readthedocs.io/en/stable/operations/backup.html
+**app-snapshotter** enables automatic snapshotting of your Enonic XP repository indexes - see https://xp.readthedocs.io/en/stable/operations/backup.html#backup
 
-Doing a snapshot will store only the changes from the last snapshot, so normally its a very lightweight operation.
+Doing a snapshot will store only the changes from the last snapshot, so normally it's a very lightweight operation.
 
 The application is cluster-safe; only the master node will trigger snapshots and cleanups.
 
@@ -11,14 +11,16 @@ NOTE: You will still need a way to do backups of the blobs (files) - this is jus
 
 ## Config
 
-This application can be configured in file ``$XP_HOME/config/com.enonic.app.snapshotter.cfg``
+This application can be configured in file ``$XP_HOME/config/com.enonic.app.snapshotter.cfg``.  
+[Sample config file](https://github.com/enonic/app-snapshotter/blob/master/com.enonic.app.snapshotter.cfg) is shipped with the application - 
+just copy it over into `config` folder of your Enonic XP instance.
 
 ### Schedules
 
-As default, three schedules are added; hourly, daily and weekly:
+Three schedules are configured by default: hourly, daily and weekly:
 
     snapshot.hourly.cron=1 * * * *
-    snapshot.hourly.keep=PT24H
+    snapshot.hourly.keep=PT48H
     snapshot.hourly.enabled=true
 
     snapshot.daily.cron=0 1 * * *
@@ -30,59 +32,57 @@ As default, three schedules are added; hourly, daily and weekly:
     snapshot.weekly.enabled=true
 
     cleanup.cron=0 * * * *
-    
-    notifiers=
 
   
 The ``cron``-property is a string in Unix cron format (http://www.nncron.ru/help/EN/working/cron-format.htm)
 
 The ``keep``-property is given as a java Duration parsable string (https://en.wikipedia.org/wiki/ISO_8601#Durations) - snapshots from the schedule older than this will be automatically deleted
 
-You can add new, named schedules if needed:
+You can add new named schedules if needed:
 
-    snapshot.every-ten-minutes.cron=0/10 * * * *
+    snapshot.every-ten-minutes.cron=*/10 * * * *
     snapshot.every-ten-minutes.keep=PT2H
     snapshot.every-ten-minutes.enabled=true
 
-To disable a default schedule, just set enabled to false, e.g ``snapshot.hourly.enabled=false``
+To disable a default schedule, just set `enabled` to `false`, e.g ``snapshot.hourly.enabled=false``
 
 ### Cleanup
 
-The cleanup schedule is set up to run every hour by default. This will delete snapshots that are outside the keep-range of the schedules. This schedule can be configured by changing the ``cleanup.cron``
+The cleanup schedule is configured to run every hour by default. This will delete snapshots that are outside the keep-range of the schedules. This schedule can be changed via ``cleanup.cron`` setting
 
 ### Notifiers
 
-Provides a comma-separated list of notifiers, e.g ``notifiers=slack,mail``
-
 #### Slack
 
-If you want to be notified in a slack channel, this be be configured in file ``com.enonic.app.snapshotter.slack.cfg``
+If you want to be notified in a slack channel, add the following to your config file ``com.enonic.app.snapshotter.cfg``
 
-    slackWebhook = https://hooks.slack.com/services/<SomeSlackHookUrl>
-    project = <MyHost1>
-    reportOnSuccess = false
-    reportOnFailure = true
+    notifier.slack.slackWebhook = https://hooks.slack.com/services/<SomeSlackHookUrl>
+    notifier.slack.project = <MyHost1>
+    notifier.slack.reportOnSuccess = false
+    notifier.slack.reportOnFailure = true
 
 
 #### Mail
 
-If you Enonic XP installation is configured for mail (http://xp.readthedocs.io/en/stable/operations/configuration.html#mail-configuration) the Snapshotter app can be configured for sending email when snapshot operations are done. Usually you want to receive a mail if something goes wrong (``mail.onFailure=true``) but you can also set it up to send a mail when everything is ok (``mail.onSuccess=true``). The mail notifier is to be configured in file ``com.enonic.app.snapshotter.mail``
+If your Enonic XP installation is set up to send mail (https://developer.enonic.com/docs/xp/stable/deployment/config#mail),
+the Snapshotter app can be configured to notify about snapshot operations by email. 
+Usually you want to be notified if something went wrong (``notifier.mail.onFailure=true``) but you can also set it up to send a mail
+for successful operations (``notifier.mail.onSuccess=true``). The mail notifier can be configured in ``com.enonic.app.snapshotter.cfg``
 
-    mailOnSuccess=false
-    mailOnFailure=true
-    from=some@email.com
-    to=other@email.com,operations@bbc.co.uk
-    hostname=MyHost
+    notifier.mail.onSuccess=false
+    notifier.mail.onFailure=true
+    notifier.mail.from=some@email.com
+    notifier.mail.to=other@email.com,operations@bbc.co.uk
 
 ## Monitoring
 
-The snapshotter app adds two endpoints to the statistics-endpoint (https://developer.enonic.com/docs/xp/stable/runtime/statistics):
+The Snapshotter app adds two endpoints to the statistics-endpoint (https://developer.enonic.com/docs/xp/stable/runtime/statistics):
 
     "com.enonic.app.snapshotter.latest"
     "com.enonic.app.snapshotter.list"
 
 
-The first is very useful to ensure that the age of the newest snapshot is not older than expected:
+The first one is very useful to ensure that the newest snapshot is not older than expected:
 
     {
         indices: [
@@ -96,5 +96,13 @@ The first is very useful to ensure that the age of the newest snapshot is not ol
         name: "hourly_2019-11-14t09_01_00.001371z"
     }
 
-This age-value is the age of the last snapshot in minutes, typically used to trigger an alarm if > e.g 80 minutes, depending on your configured frequency
+Value of the `age` is the max age of the last snapshot in minutes, typically used to trigger an alarm if > e.g 80 minutes, depending on your configured frequency
 
+## Upgrade notes
+
+- Starting from version 3.0.0 ``app-snapshotter`` requires ``XP`` version 7.3.x and newer
+- The configurations of Slack and Mail notifications were moved to the main application config file ``$XP_HOME/config/com.enonic.app.snapshotter.cfg``. 
+- The configuration files ``$XP_HOME/config/com.enonic.app.snapshotter.slack.cfg`` and ``$XP_HOME/config/com.enonic.app.snapshotter.mail.cfg`` were removed
+- The ``notifiers`` configuration property was removed from ``$XP_HOME/config/com.enonic.app.snapshotter.cfg`` file.
+- The ``mail.hostname`` configuration property was removed from ``$XP_HOME/config/com.enonic.app.snapshotter.mail.cfg`` file.
+- In order to enable ``Slack`` or ``Mail`` notifiers you should use instructions from section ``Notifiers`` of this document.

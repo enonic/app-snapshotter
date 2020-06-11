@@ -44,6 +44,7 @@ class SnapshotReport
         snapshotNode.put( "timestamp", result.getTimestamp().toString() );
         snapshotNode.put( "age", Duration.between( result.getTimestamp(), now ).toMinutes() );
         snapshotNode.put( "name", result.getName() );
+        snapshotNode.put( "state", result.getState().name() );
         return snapshotNode;
     }
 

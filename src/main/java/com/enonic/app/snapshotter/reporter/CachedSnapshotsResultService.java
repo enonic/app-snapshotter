@@ -39,6 +39,7 @@ public class CachedSnapshotsResultService
             build();
     }
 
+    @Override
     public SnapshotResults get()
     {
         try
