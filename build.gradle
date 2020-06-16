@@ -18,11 +18,9 @@ dependencies {
     include "com.enonic.xp:lib-portal:${xpVersion}"
     include "com.enonic.xp:lib-cluster:${xpVersion}"
     include "com.enonic.xp:lib-mail:${xpVersion}"
-    include "com.enonic.lib:lib-http-client:2.1.1"
-    include "com.enonic.lib:lib-cron:1.1.0"
+    include "com.enonic.lib:lib-http-client:2.1.2"
+    include "com.enonic.lib:lib-cron:1.1.1"
     include "com.enonic.lib:lib-mustache:2.0.0"
-    compile "com.enonic.xp:core-api:${xpVersion}"
-    compile "com.enonic.xp:portal-api:${xpVersion}"
 
     testImplementation 'org.mockito:mockito-core:3.3.3'
     testImplementation 'org.mockito:mockito-junit-jupiter:3.3.3'

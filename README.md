@@ -93,7 +93,8 @@ The first one is very useful to ensure that the newest snapshot is not older tha
         ],
         timestamp: "2019-11-14T09:01:00.152Z",
         age: 9,
-        name: "hourly_2019-11-14t09_01_00.001371z"
+        name: "hourly_2019-11-14t09_01_00.001371z",
+        state: "SUCCESS"
     }
 
 Value of the `age` is the max age of the last snapshot in minutes, typically used to trigger an alarm if > e.g 80 minutes, depending on your configured frequency
