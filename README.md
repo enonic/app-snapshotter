@@ -13,7 +13,8 @@ NOTE: You will still need a way to do backups of the blobs (files) - this is jus
 
 This application can be configured in file ``$XP_HOME/config/com.enonic.app.snapshotter.cfg``.  
 [Sample config file](https://github.com/enonic/app-snapshotter/blob/master/com.enonic.app.snapshotter.cfg) is shipped with the application - 
-just copy it over into `config` folder of your Enonic XP instance.
+just copy it over into `config` folder of your Enonic XP instance and adjust the settings (note that email and Slack notifications are
+commented out by default).
 
 ### Schedules
 
