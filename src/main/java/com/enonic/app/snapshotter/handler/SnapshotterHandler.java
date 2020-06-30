@@ -5,6 +5,7 @@ import java.net.InetAddress;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -26,12 +27,12 @@ public class SnapshotterHandler
 {
     private final Logger LOG = LoggerFactory.getLogger( SnapshotterHandler.class );
 
-    private SnapshotService snapshotService;
+    private Supplier<SnapshotService> snapshotServiceSupplier;
 
     @Override
     public void initialize( final BeanContext context )
     {
-        this.snapshotService = context.getService( SnapshotService.class ).get();
+        this.snapshotServiceSupplier = context.getService( SnapshotService.class );
     }
 
     public String snapshot( final String scheduleName, final String repositoryId )
@@ -44,7 +45,7 @@ public class SnapshotterHandler
             paramsBuilder.repositoryId( RepositoryId.from( repositoryId ) );
         }
 
-        final SnapshotResult snapshotResult = snapshotService.snapshot( paramsBuilder.build() );
+        final SnapshotResult snapshotResult = snapshotServiceSupplier.get().snapshot( paramsBuilder.build() );
 
         return snapshotResult.getState().name();
     }
@@ -70,7 +71,7 @@ public class SnapshotterHandler
     {
         LOG.debug( "Deleting snapshots of type [" + scheduleName + "] older than [" + threshold + "]" );
 
-        final SnapshotResults snapshots = snapshotService.list();
+        final SnapshotResults snapshots = snapshotServiceSupplier.get().list();
 
         final List<String> toBeDeleted = snapshots.stream().
             filter( ( snapshot ) -> snapshot.getTimestamp().isBefore( threshold ) ).
@@ -80,7 +81,7 @@ public class SnapshotterHandler
 
         if ( !toBeDeleted.isEmpty() )
         {
-            snapshotService.delete( DeleteSnapshotParams.create().
+            snapshotServiceSupplier.get().delete( DeleteSnapshotParams.create().
                 addAll( toBeDeleted ).
                 build() );
         }
