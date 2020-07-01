@@ -27,11 +27,7 @@ function required(params, name) {
     return value;
 }
 
-var appConfig = {};
-
-Object.keys(defaultConfig).forEach(function (key) {
-    appConfig[key] = defaultConfig[key];
-});
+var appConfig = defaultConfig;
 
 var mailConfigExists = false;
 

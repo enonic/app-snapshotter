@@ -11,14 +11,15 @@ NOTE: You will still need a way to do backups of the blobs (files) - this is jus
 
 ## Config
 
-This application can be configured in file ``$XP_HOME/config/com.enonic.app.snapshotter.cfg``.  
+This application is shipped with a default schedule (see **Schedules** section below).
+If you want to override this schedule, this can be done with config file ``$XP_HOME/config/com.enonic.app.snapshotter.cfg``.  
 [Sample config file](https://github.com/enonic/app-snapshotter/blob/master/com.enonic.app.snapshotter.cfg) is shipped with the application - 
 just copy it over into `config` folder of your Enonic XP instance and adjust the settings (note that email and Slack notifications are
 commented out by default).
 
 ### Schedules
 
-Three schedules are configured by default: hourly, daily and weekly:
+Three schedules (hourly, daily and weekly) are configured by default: 
 
     snapshot.hourly.cron=1 * * * *
     snapshot.hourly.keep=PT48H
@@ -28,7 +29,7 @@ Three schedules are configured by default: hourly, daily and weekly:
     snapshot.daily.keep=P7D
     snapshot.daily.enabled=true
 
-    snapshot.weekly.cron=0 4 * * 0
+    snapshot.weekly.cron=0 4 * * 1
     snapshot.weekly.keep=P30D
     snapshot.weekly.enabled=true
 

@@ -50,6 +50,7 @@
     <div class="row">
         <div class="col s12">
             <h2>Notifiers:</h2>
+            {{#data.notifiers.0}}
             {{#data.notifiers}}
             <ul class="collection with-header">
                 <li class="collection-header light-blue lighten-3">
@@ -70,6 +71,10 @@
                 </li>
             </ul>
             {{/data.notifiers}}
+            {{/data.notifiers.0}}
+            {{^data.notifiers.0}}
+            <span class="label">Not configured</span>
+            {{/data.notifiers.0}}
         </div>
     </div>
 </div>
