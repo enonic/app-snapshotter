@@ -1,12 +1,12 @@
 # app-snapshotter
 
-**app-snapshotter** enables automatic snapshotting of your Enonic XP repository indexes - see https://xp.readthedocs.io/en/stable/operations/backup.html#backup
+**app-snapshotter** enables automatic snapshotting of your Enonic XP repository indicies.
 
-Doing a snapshot will store only the changes from the last snapshot, so normally it's a very lightweight operation.
+A snapshot will only store the changes since your previous snapshot, so normally it's a very lightweight operation.
 
 The application is cluster-safe; only the master node will trigger snapshots and cleanups.
 
-NOTE: You will still need a way to do backups of the blobs (files) - this is just to automate the snapshots of the indexes.
+NOTE: For backups, you will still need a way to secury a copy of the blobstore - and the snapshot files written to disk. This app only automates the snapshots of indicies.
 
 
 ## Config
