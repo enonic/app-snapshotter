@@ -2,7 +2,7 @@
 
 **app-snapshotter** enables automatic snapshotting of your Enonic XP repository indicies.
 
-A snapshot will only store the changes since your preview snapshot, so normally it's a very lightweight operation.
+A snapshot will only store the changes since your previous snapshot, so normally it's a very lightweight operation.
 
 The application is cluster-safe; only the master node will trigger snapshots and cleanups.
 
