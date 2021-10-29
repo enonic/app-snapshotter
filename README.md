@@ -6,8 +6,7 @@ A snapshot will only store the changes since your previous snapshot, so normally
 
 The application is cluster-safe; only the master node will trigger snapshots and cleanups.
 
-NOTE: For backups, you will still need a way to secury a copy of the blobstore - and the snapshot files written to disk. This app only automates the snapshots of indicies.
-
+NOTE: This app only automates the snapshots of indicies. Snapshots are not considered backups. To perform a backup you additionally need to copy your blobstore - and the snapshot files to a safe location. For more details, please consult the XP documentation.
 
 ## Config
 
