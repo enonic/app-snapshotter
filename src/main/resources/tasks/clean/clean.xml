@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<task xmlns="urn:enonic:xp:model:1.0">
+  <description>Snapshots cleanup</description>
+  <form>
+  </form>
+</task>

@@ -33,14 +33,14 @@
                 <li class="collection-header light-green lighten-3">
                     <div class="valign-wrapper">
                         <span><i class="material-icons medium icon">schedule</i></span>
-                        <span class="scheduleHeader"> &nbsp; {{name}}</span>
+                        <span class="scheduleHeader"> &nbsp; {{displayName}}</span>
                     </div>
                 </li>
                 <li class="collection-item">
                     <ul>
-                        <li><span class="label">Schedule: </span>{{cron}}</li>
+                        <li><span class="label">Schedule: </span>{{schedule.value}}</li>
                         <li><span class="label">Keep: </span>{{keep}}</li>
-                        <li><span class="label">Next run: </span>{{readable}}</li>
+                        <li><span class="label">Last run: </span>{{readable}}</li>
                     </ul>
                 </li>
             </ul>
@@ -77,8 +77,6 @@
     </div>
 </div>
 
-<script src="{{assetsUrl}}/js/jquery-3.3.1.min.js"></script>
-<script src="{{assetsUrl}}/js/materialize.min.js"></script>
 <script src="{{assetsUrl}}/js/snapshotter.js" data-svcurl="{{svcUrl}}"></script>
 
 </body>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<task xmlns="urn:enonic:xp:model:1.0">
+  <description>Snapshot creation</description>
+  <form>
+    <input name="name" type="TextLine">
+      <label>Snapshot name</label>
+    </input>
+  </form>
+</task>
