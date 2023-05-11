@@ -1,3 +1,9 @@
+const libs = {
+    slackNotifier: require('/lib/slack-notifier'),
+    mailNotifier: require('/lib/mail-notifier'),
+    configParser: require('/lib/config-parser'),
+};
+
 function Notifiers() {
     this.notifiers = [];
 }
@@ -28,10 +34,6 @@ Notifiers.prototype.failed = function (text, errorMessage) {
 
 var notifiers = new Notifiers();
 
-exports.register = function (notifier) {
-    notifiers.register(notifier);
-};
-
 exports.notify = function (notifierName) {
     notifiers.notify(notifierName)
 };
@@ -43,3 +45,19 @@ exports.success = function (text) {
 exports.failed = function (text, errorMessage) {
     notifiers.failed(text, errorMessage);
 };
+
+function registerNotifier (notifier) {
+    notifiers.register(notifier);
+}
+
+exports.initNotifiers = function (appConfig) {
+    libs.configParser.parseNotifiers(appConfig).forEach(function (notifier) {
+        if (notifier.name === 'slack') {
+            registerNotifier(libs.slackNotifier.newInstance(notifier.config));
+        } else if (notifier.name === 'mail') {
+            registerNotifier(libs.mailNotifier.newInstance(notifier.config));
+        } else {
+            // do nothing
+        }
+    });
+}

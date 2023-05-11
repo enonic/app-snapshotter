@@ -1,51 +1,45 @@
 "use strict";
-(function ($) {
+(function () {
 
-        var alertHideTimer;
-        var svcUrl = document.currentScript.getAttribute('data-svcurl');
+        const svcUrl = document.currentScript.getAttribute('data-svcurl');
 
-        var listenToNotifierTest = function () {
-            $(".btnTestNotifier").click(function () {
-                testNotifier($(this).data('name'));
-            });
+        const listenToNotifierTest = function () {
+            const btns = document.getElementsByClassName('btnTestNotifier');
+
+            for (let btn of btns) {
+                btn.addEventListener('click', function () {
+                    testNotifier(btn.getAttribute('data-name'));
+                })
+            }
         };
 
-        var testNotifier = function (notifierName) {
+        const testNotifier = function (notifierName) {
+            const xhr = new XMLHttpRequest();
+            xhr.open('GET', `${svcUrl}notifier-test-service?notifierName=${notifierName}`);
+            xhr.send();
 
-            var data = {
-                notifierName: notifierName
+            xhr.onload = function() {
+                if (xhr.status !== 200) {
+                    showAlertMessage('Notifier failed', 'error');
+                } else { // show the result
+                    showAlertMessage('Testing notifier', 'success');
+                }
             };
 
-            $.ajax({
-                url: svcUrl + 'notifier-test-service',
-                method: 'GET',
-                cache: false,
-                data: data
-            }).then(function (data) {
-                showAlertMessage('Testing notifier', 'success');
-            }).fail(function (jqXHR) {
+            xhr.onerror = function() {
                 showAlertMessage('Notifier failed', 'error');
-            });
-
+            };
         };
 
-        var showAlertMessage = function (text, type) {
-            type = type || 'warning';
-            $('#alertMessageText').text(text);
-            $('#alertMessage')
-                .show()
-                .toggleClass('alert-warning', type === 'warning')
-                .toggleClass('alert-danger', type === 'error')
-                .toggleClass('alert-info', type === 'info')
-                .toggleClass('alert-success', type === 'success');
-
-            clearTimeout(alertHideTimer);
-            alertHideTimer = setTimeout(function () {
-                $('#alertMessage').hide();
-            }, 5000);
+        const showAlertMessage = function (text, type) {
+            if (type === 'error') {
+                console.error(text);
+            } else {
+                console.info(text);
+            }
         };
 
         listenToNotifierTest();
 
-    }(jQuery)
+    }()
 );

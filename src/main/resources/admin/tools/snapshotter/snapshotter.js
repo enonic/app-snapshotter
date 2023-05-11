@@ -1,13 +1,13 @@
-var libs = {
+const libs = {
     snapshotter: require('/lib/snapshotter'),
     portal: require('/lib/xp/portal'),
     mustache: require('/lib/mustache'),
-    cron: require('/lib/cron'),
+    snapshotJobScheduler: require('/lib/snapshot-job-scheduler'),
     configParser: require('/lib/config-parser')
 };
 
 function buildConfigFromMap(configAsMap) {
-    var result = [];
+    const result = [];
 
     Object.keys(configAsMap).forEach(function (key) {
         result.push({
@@ -20,40 +20,13 @@ function buildConfigFromMap(configAsMap) {
 }
 
 exports.get = function (req) {
+    const view = resolve('snapshotter.html');
+    const appConfig = libs.snapshotter.getConfig();
 
-    var view = resolve('snapshotter.html');
+    const notifiers = makeNotifiers(appConfig);
+    const cronJobs = makeCronJobsData(appConfig);
 
-    var appConfig = libs.snapshotter.getConfig();
-
-    var schedulesResult = libs.configParser.parseSnapshots(appConfig);
-
-    var cronJobDetails = {};
-    schedulesResult.forEach(function (schedule) {
-        cronJobDetails[schedule.name] = schedule;
-    });
-
-    var notifiers = libs.configParser.parseNotifiers(appConfig);
-
-    notifiers.forEach(function (notifier) {
-        notifier.config = buildConfigFromMap(notifier.config);
-    });
-
-    var cronJobsResult = libs.cron.list();
-
-    var cronJobs = [];
-    cronJobsResult.jobs.forEach(function (job) {
-        if (cronJobDetails[job.name]) {
-            job.keep = cronJobDetails[job.name].keep;
-
-            var dateStr = job.nextExecTime.match(/^[^.]*/g)[0];
-            var date = new Date(Date.parse(dateStr));
-            job.readable = date.toLocaleDateString() + " " + date.toLocaleTimeString();
-
-            cronJobs.push(job);
-        }
-    });
-
-    var model = {
+    const model = {
         jsUrl: libs.portal.assetUrl({path: "/js/snapshotter.js"}),
         assetsUrl: libs.portal.assetUrl({path: ""}),
         svcUrl: libs.portal.serviceUrl({service: 'Z'}).slice(0, -1),
@@ -69,3 +42,48 @@ exports.get = function (req) {
     };
 
 };
+
+function makeNotifiers(appConfig) {
+    const notifiers = libs.configParser.parseNotifiers(appConfig);
+
+    notifiers.forEach(function (notifier) {
+        notifier.config = buildConfigFromMap(notifier.config);
+    });
+
+    return notifiers;
+}
+
+function makeCronJobsData(appConfig) {
+    const snapshotsToSchedule = libs.configParser.parseSnapshots(appConfig);
+
+    const cronJobDetails = {};
+    snapshotsToSchedule.forEach(function (schedule) {
+        const key = libs.snapshotJobScheduler.makeScheduledSnapshotJobName(schedule.name);
+        cronJobDetails[key] = schedule;
+    });
+
+    const scheduledJobs = libs.snapshotJobScheduler.list();
+
+    const cronJobs = [];
+    scheduledJobs.forEach(function (job) {
+        if (cronJobDetails[job.name]) {
+            job.displayName = cronJobDetails[job.name].name;
+            job.keep = cronJobDetails[job.name].keep;
+            job.readable = makeLastRunString(job);
+
+            cronJobs.push(job);
+        }
+    });
+
+    return cronJobs;
+}
+
+function makeLastRunString(job) {
+    if (!job.lastRun) {
+        return '-----'
+    }
+
+    const dateStr = job.lastRun.match(/^[^.]*/g)[0];
+    const date = new Date(Date.parse(dateStr));
+    return date.toLocaleDateString() + " " + date.toLocaleTimeString();
+}
