@@ -29,17 +29,20 @@ var expectedSnapshotConfig = [
     {
         "name": "hourly",
         "keep": "PT48H",
-        "cron": "1 * * * *"
+        "cron": "1 * * * *",
+        "enabled": true
     },
     {
         "name": "daily",
         "keep": "P7D",
-        "cron": "0 1 * * *"
+        "cron": "0 1 * * *",
+        "enabled": true
     },
     {
         "name": "weekly",
         "keep": "P30D",
-        "cron": "0 4 * * 1"
+        "cron": "0 4 * * 1",
+        "enabled": true
     }
 ];
 

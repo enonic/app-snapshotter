@@ -30,14 +30,12 @@ function SnapshotterConfigParser(config) {
 
         var snapshotJobs = [];
 
-        snapshotJobNames.filter(function (snapshotJobName) {
-            var property = self.getProperty(snapshotConfigs, snapshotJobName, "enabled");
-            return property === true || property === "true";
-        }).forEach(function (snapshotJobName) {
+        snapshotJobNames.forEach(function (snapshotJobName) {
             snapshotJobs.push({
                 name: snapshotJobName,
                 keep: self.getProperty(snapshotConfigs, snapshotJobName, "keep"),
-                cron: self.getProperty(snapshotConfigs, snapshotJobName, "cron")
+                cron: self.getProperty(snapshotConfigs, snapshotJobName, "cron"),
+                enabled: self.getBooleanProperty(snapshotConfigs, snapshotJobName, "enabled"),
             });
         });
 
@@ -102,6 +100,12 @@ function SnapshotterConfigParser(config) {
         }
 
         return configs[property];
+    };
+
+    this.getBooleanProperty = function (configs, name, propName) {
+        const property = this.getProperty(configs, name, propName);
+
+        return property === true || property === "true";
     };
 
     this.splitByComma = function (value) {

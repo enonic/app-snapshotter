@@ -21,6 +21,7 @@ exports.run = function (params) {
 
         libs.notifiers.success(text);
     } catch (e) {
+        log.warn(e);
         libs.notifiers.failed(text, e.message);
     }
 };

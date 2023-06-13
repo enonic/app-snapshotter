@@ -23,14 +23,14 @@ function makeScheduledSnapshotJobName(name) {
     return scheduledSnapshotJobPrefix + name;
 }
 
-function scheduleJob(name, cron, taskDescriptor, config) {
-    const isExistingJob = !!libs.scheduler.get({name});
+function scheduleJob(params) {
+    const isExistingJob = !!libs.scheduler.get({name: params.name});
 
     runAsAdmin(function () {
         if (isExistingJob) {
-            updateScheduledJob(name, cron)
+            updateScheduledJob(params)
         } else {
-            createScheduledJob(name, cron, taskDescriptor, config);
+            createScheduledJob(params);
         }
     });
 }
@@ -43,35 +43,36 @@ function runAsAdmin(callback) {
     }, callback);
 }
 
-function createScheduledJob(name, cron, taskDescriptor, config) {
+function createScheduledJob(params) {
     const createParams = {
-        name: name,
-        descriptor: taskDescriptor,
-        enabled: true,
+        name: params.name,
+        descriptor: params.taskDescriptor,
+        enabled: params.enabled,
         user: 'user:system:su',
         schedule: {
             type: 'CRON',
-            value: cron,
+            value: params.cron,
             timeZone: 'UTC',
         },
     };
 
-    if (!!config) {
-        createParams.config = config;
+    if (!!params.config) {
+        createParams.config = params.config;
     }
 
     libs.scheduler.create(createParams);
 }
 
-function updateScheduledJob(name, cron) {
+function updateScheduledJob(params) {
     libs.scheduler.modify({
-        name: name,
+        name: params.name,
         editor: (edit) => {
             edit.schedule = {
                 type: 'CRON',
-                value: cron,
+                value: params.cron,
                 timeZone: 'UTC',
             };
+            edit.enabled = params.enabled;
 
             return edit;
         }
@@ -90,7 +91,16 @@ function scheduleSnapshots(appConfig) {
 
     snapshotsToSchedule.forEach(function (snapshotConfig) {
         const snapshotJobName = makeScheduledSnapshotJobName(snapshotConfig.name);
-        scheduleJob(snapshotJobName, snapshotConfig.cron, snapshotTaskDescriptor, {name: snapshotJobName});
+
+        scheduleJob({
+            name: snapshotJobName,
+            taskDescriptor: snapshotTaskDescriptor,
+            cron: snapshotConfig.cron,
+            enabled: snapshotConfig.enabled,
+            config: {
+                name: snapshotJobName
+            },
+        });
     });
 }
 
@@ -98,5 +108,10 @@ function scheduleCleanup(appConfig) {
     const cleanupCron = libs.configParser.parseCleanupCron(appConfig);
     const cleanupCronName = makeScheduledSnapshotJobName('cleanup');
 
-    scheduleJob(cleanupCronName, cleanupCron, cleanupTaskDescriptor);
+    scheduleJob({
+        name: cleanupCronName,
+        taskDescriptor: cleanupTaskDescriptor,
+        cron: cleanupCron,
+        enabled: true,
+    });
 }
