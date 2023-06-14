@@ -10,14 +10,14 @@ const scheduledSnapshotJobPrefix = appName + '--'
 const snapshotTaskDescriptor = appName + ':snapshot';
 const cleanupTaskDescriptor = appName + ':clean';
 
-exports.list = function () {
+exports.list = listScheduledJobs;
+exports.makeScheduledSnapshotJobName = makeScheduledSnapshotJobName;
+exports.scheduleSnapshotsJobs = scheduleSnapshotsJobs;
+exports.disableScheduledJobs = disableScheduledJobs;
+
+function listScheduledJobs() {
     return libs.scheduler.list();
 }
-
-exports.makeScheduledSnapshotJobName = makeScheduledSnapshotJobName;
-
-exports.scheduleSnapshotsJobs = scheduleSnapshotsJobs;
-
 
 function makeScheduledSnapshotJobName(name) {
     return scheduledSnapshotJobPrefix + name;
@@ -81,32 +81,41 @@ function updateScheduledJob(params) {
 
 function scheduleSnapshotsJobs(appConfig) {
     if (libs.cluster.isMaster()) {
-        scheduleSnapshots(appConfig);
         scheduleCleanup(appConfig);
+
+        const snapshotsConfigs = getSnapshotsToSchedule(appConfig);
+        scheduleSnapshots(snapshotsConfigs);
+        cleanupStaleJobs(snapshotsConfigs);
     }
 }
 
-function scheduleSnapshots(appConfig) {
-    const snapshotsToSchedule = libs.configParser.parseSnapshots(appConfig);
-
-    snapshotsToSchedule.forEach(function (snapshotConfig) {
-        const snapshotJobName = makeScheduledSnapshotJobName(snapshotConfig.name);
-
+function scheduleSnapshots(snapshotsConfigs) {
+    snapshotsConfigs.forEach(function (snapshotConfig) {
         scheduleJob({
-            name: snapshotJobName,
+            name: snapshotConfig.name,
             taskDescriptor: snapshotTaskDescriptor,
             cron: snapshotConfig.cron,
             enabled: snapshotConfig.enabled,
             config: {
-                name: snapshotJobName
+                name: snapshotConfig.name
             },
         });
     });
 }
 
+function getSnapshotsToSchedule(appConfig) {
+    const snapshotsConfigs = libs.configParser.parseSnapshots(appConfig);
+
+    snapshotsConfigs.forEach(function (snapshotConfig) {
+        snapshotConfig.name = makeScheduledSnapshotJobName(snapshotConfig.name);
+    });
+
+    return snapshotsConfigs;
+}
+
 function scheduleCleanup(appConfig) {
     const cleanupCron = libs.configParser.parseCleanupCron(appConfig);
-    const cleanupCronName = makeScheduledSnapshotJobName('cleanup');
+    const cleanupCronName = makeCleanupCronName();
 
     scheduleJob({
         name: cleanupCronName,
@@ -114,4 +123,81 @@ function scheduleCleanup(appConfig) {
         cron: cleanupCron,
         enabled: true,
     });
+}
+
+function makeCleanupCronName() {
+    return makeScheduledSnapshotJobName('cleanup');
+}
+
+function disableScheduledJobs(appConfig) {
+    if (libs.cluster.isMaster()) {
+        log.info('Disabling ' + app.name + ' scheduled jobs');
+        disableScheduledSnapshots(appConfig);
+    }
+}
+
+function disableScheduledSnapshots(appConfig) {
+    // snapshot tasks
+    getSnapshotsToSchedule(appConfig).forEach(function (snapshotConfig) {
+        disableScheduledSnapshot(snapshotConfig.name);
+    });
+
+    // cleanup task
+    disableScheduledSnapshot(makeCleanupCronName());
+}
+
+function disableScheduledSnapshot(snapshotJobName) {
+    const isExistingJob = !!libs.scheduler.get({name: snapshotJobName});
+
+    if (isExistingJob) {
+        runAsAdmin(function () {
+            doDisableScheduledSnapshot(snapshotJobName);
+        });
+    }
+}
+
+function doDisableScheduledSnapshot(name) {
+    libs.scheduler.modify({
+        name: name,
+        editor: (edit) => {
+            edit.enabled = false;
+
+            return edit;
+        }
+    });
+}
+
+function cleanupStaleJobs(snapshotsConfigs) {
+    if (libs.cluster.isMaster()) {
+        const jobsToKeep = getSnapshotJobsToKeep(snapshotsConfigs);
+        const scheduledJobs = listScheduledJobs();
+
+        scheduledJobs.filter(isSnapshotterJob).map(extractJobName).forEach(function (scheduledSnapshotJobName) {
+            if (jobsToKeep.indexOf(scheduledSnapshotJobName) === -1) {
+                log.info('Removing stale snapshotter job: ' + scheduledSnapshotJobName);
+
+                libs.scheduler.delete({
+                    name: scheduledSnapshotJobName,
+                });
+            }
+        });
+    }
+}
+
+function getSnapshotJobsToKeep(snapshotsConfigs) {
+    const actualJobsNames = [makeCleanupCronName()];
+
+    snapshotsConfigs.forEach(function (snapshotConfig) {
+        actualJobsNames.push(snapshotConfig.name);
+    });
+
+    return actualJobsNames;
+}
+
+function isSnapshotterJob(job) {
+    return job.descriptor.indexOf(appName) === 0;
+}
+
+function extractJobName(job) {
+    return job.name;
 }
