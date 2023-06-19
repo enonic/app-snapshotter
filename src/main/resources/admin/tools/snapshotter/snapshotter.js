@@ -70,6 +70,7 @@ function makeCronJobsData(appConfig) {
             job.displayName = cronJobDetails[job.name].name;
             job.keep = cronJobDetails[job.name].keep;
             job.readable = makeLastRunString(job);
+            job.enabled = cronJobDetails[job.name].enabled;
 
             cronJobs.push(job);
         }

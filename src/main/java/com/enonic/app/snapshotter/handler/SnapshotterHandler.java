@@ -74,8 +74,9 @@ public class SnapshotterHandler
         final SnapshotResults snapshots = snapshotServiceSupplier.get().list();
 
         final List<String> toBeDeleted = snapshots.stream().
-            filter( ( snapshot ) -> snapshot.getTimestamp().isBefore( threshold ) ).
             filter( ( snapshot ) -> snapshot.getName().startsWith( scheduleName ) ).
+            filter( ( snapshot ) -> snapshot.getTimestamp().getEpochSecond() > 0 ). // ES returns snapshots with "zero" timestamp when they are being created
+            filter( ( snapshot ) -> snapshot.getTimestamp().isBefore( threshold ) ).
             map( SnapshotResult::getName ).
             collect( Collectors.toList() );
 

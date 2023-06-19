@@ -21,6 +21,7 @@ exports.run = function (params) {
 
         libs.notifiers.success(text);
     } catch (e) {
+        log.warning('Error while creating a snapshot', e);
         libs.notifiers.failed(text, e.message);
     }
 };
