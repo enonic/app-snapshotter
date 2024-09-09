@@ -5,7 +5,7 @@ const libs = {
     configParser: require('/lib/config-parser'),
 };
 
-const appName = 'com.enonic.app.snapshotter';
+const appName = app.name;
 const scheduledSnapshotJobPrefix = appName + '--'
 const snapshotTaskDescriptor = appName + ':snapshot';
 const cleanupTaskDescriptor = appName + ':clean';
@@ -14,6 +14,7 @@ exports.list = listScheduledJobs;
 exports.makeScheduledSnapshotJobName = makeScheduledSnapshotJobName;
 exports.scheduleSnapshotsJobs = scheduleSnapshotsJobs;
 exports.disableScheduledJobs = disableScheduledJobs;
+exports.appPrefix = scheduledSnapshotJobPrefix;
 
 function listScheduledJobs() {
     return libs.scheduler.list();

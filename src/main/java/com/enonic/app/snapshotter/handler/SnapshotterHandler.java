@@ -29,6 +29,8 @@ public class SnapshotterHandler
 
     private Supplier<SnapshotService> snapshotServiceSupplier;
 
+    private static final String NAME_TIME_SEPARATOR = "_";
+
     @Override
     public void initialize( final BeanContext context )
     {
@@ -38,7 +40,7 @@ public class SnapshotterHandler
     public String snapshot( final String scheduleName, final String repositoryId )
     {
         final SnapshotParams.Builder paramsBuilder = SnapshotParams.create().
-            snapshotName( scheduleName + "_" + createTimestampString() );
+            snapshotName( scheduleName + NAME_TIME_SEPARATOR + createTimestampString() );
 
         if ( !Strings.isNullOrEmpty( repositoryId ) )
         {
@@ -50,9 +52,9 @@ public class SnapshotterHandler
         return snapshotResult.getState().name();
     }
 
-    public void deleteSnapshot( final String scheduleName, final String keep )
+    public void deleteSnapshot( final String scheduleName, final String keep, final String appPrefix )
     {
-        deleteSnapshot( scheduleName, getThreshold( Duration.parse( keep ) ) );
+        deleteSnapshot( scheduleName, appPrefix, getThreshold( Duration.parse( keep ) ) );
     }
 
     public String getDefaultHost()
@@ -67,14 +69,14 @@ public class SnapshotterHandler
         }
     }
 
-    private void deleteSnapshot( final String scheduleName, final Instant threshold )
+    private void deleteSnapshot( final String scheduleName, final String appPrefix, final Instant threshold )
     {
         LOG.debug( "Deleting snapshots of type [" + scheduleName + "] older than [" + threshold + "]" );
 
         final SnapshotResults snapshots = snapshotServiceSupplier.get().list();
 
         final List<String> toBeDeleted = snapshots.stream().
-            filter( ( snapshot ) -> snapshot.getName().startsWith( scheduleName ) ).
+            filter( ( snapshot ) -> nameFilter(snapshot.getName(), scheduleName, appPrefix) ).
             filter( ( snapshot ) -> snapshot.getTimestamp().getEpochSecond() > 0 ). // ES returns snapshots with "zero" timestamp when they are being created
             filter( ( snapshot ) -> snapshot.getTimestamp().isBefore( threshold ) ).
             map( SnapshotResult::getName ).
@@ -86,6 +88,13 @@ public class SnapshotterHandler
                 addAll( toBeDeleted ).
                 build() );
         }
+    }
+
+    private boolean nameFilter( final String snapshotName, final String scheduleName, final String appPrefix )
+    {
+        final String scheduleNameWithSeparator = scheduleName + NAME_TIME_SEPARATOR;
+        final String scheduleNameWithoutPrefix = scheduleNameWithSeparator.replace( appPrefix, "" );
+        return snapshotName.startsWith( scheduleNameWithSeparator ) || snapshotName.startsWith( scheduleNameWithoutPrefix );
     }
 
     private Instant getThreshold( final Duration dailyKeep )

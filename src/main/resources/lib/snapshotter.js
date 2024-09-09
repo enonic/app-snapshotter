@@ -53,7 +53,7 @@ exports.snapshot = function (params) {
 };
 
 exports.deleteSnapshot = function (params) {
-    bean.deleteSnapshot(required(params, 'scheduleName'), required(params, 'keep'));
+    bean.deleteSnapshot(required(params, 'scheduleName'), required(params, 'keep'), required(params, 'appPrefix'));
 };
 
 exports.getConfig = function () {
