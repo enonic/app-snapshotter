@@ -26,6 +26,7 @@ function cleanScheduledJob(schedule) {
 
     libs.snapshotter.deleteSnapshot({
         scheduleName: jobName,
+        appPrefix: libs.snapshotJobScheduler.appPrefix,
         keep: schedule.keep
     });
 }

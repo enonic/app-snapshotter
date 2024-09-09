@@ -25,7 +25,8 @@ exports.snapshot = function () {
 
 exports.deleteSnapshot = function () {
     snapshotter.deleteSnapshot({
-        scheduleName: 'name',
+        scheduleName: 'com.enonic.app.snapshotter--name',
+        appPrefix: 'com.enonic.app.snapshotter--',
         keep: 'PT1H'
     });
 };
