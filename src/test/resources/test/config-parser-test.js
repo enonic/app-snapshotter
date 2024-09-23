@@ -5,6 +5,7 @@ var appConfig = {
     "snapshot.hourly.cron": "1 * * * *",
     "snapshot.hourly.keep": "PT48H",
     "snapshot.hourly.enabled": "true",
+    "snapshot.hourly.timezone": "GMT+02:00",
     "snapshot.daily.cron": "0 1 * * *",
     "snapshot.daily.keep": "P7D",
     "snapshot.daily.enabled": "true",
@@ -30,18 +31,21 @@ var expectedSnapshotConfig = [
         "name": "hourly",
         "keep": "PT48H",
         "cron": "1 * * * *",
+        "timezone": "GMT+02:00",
         "enabled": true
     },
     {
         "name": "daily",
         "keep": "P7D",
         "cron": "0 1 * * *",
+        "timezone": "UTC",
         "enabled": true
     },
     {
         "name": "weekly",
         "keep": "P30D",
         "cron": "0 4 * * 1",
+        "timezone": "UTC",
         "enabled": true
     }
 ];
@@ -72,7 +76,10 @@ var expectedNotifiersConfig = [
     }
 ];
 
-var expectedCleanupCron = "0 * * * *";
+var expectedCleanupCron = {
+    "cron": "0 * * * *",
+    "timezone": "UTC"
+};
 
 exports.testParseSnapshots = function () {
     t.assertJsonEquals(expectedSnapshotConfig, parser.parseSnapshots(appConfig));
