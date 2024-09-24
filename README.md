@@ -51,6 +51,18 @@ To disable a default schedule, just set `enabled` to `false`, e.g ``snapshot.hou
 
 The cleanup schedule is configured to run every hour by default. This will delete snapshots that are outside the keep-range of the schedules. This schedule can be changed via ``cleanup.cron`` setting
 
+### Time Zone
+
+All the schedules are using UTC timezone by default, however you can change it by adding 'timezone' property in the config file:
+
+    snapshot.snapshotname.timezone=GMT+07:00
+
+or
+
+    cleanup.timezone=Europe/Oslo
+
+
+
 ### Notifiers
 
 #### Slack

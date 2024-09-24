@@ -35,6 +35,7 @@ function SnapshotterConfigParser(config) {
                 name: snapshotJobName,
                 keep: self.getProperty(snapshotConfigs, snapshotJobName, "keep"),
                 cron: self.getProperty(snapshotConfigs, snapshotJobName, "cron"),
+                timezone: self.getProperty(snapshotConfigs, snapshotJobName, "timezone", "UTC"),
                 enabled: self.getBooleanProperty(snapshotConfigs, snapshotJobName, "enabled"),
             });
         });
@@ -89,13 +90,20 @@ function SnapshotterConfigParser(config) {
     };
 
     this.parseCleanupCron = function () {
-        return this.getProperty(config, "cleanup", "cron");
+        return {
+            cron: this.getProperty(config, "cleanup", "cron"),
+            timezone: this.getProperty(config, "cleanup", "timezone", "UTC"),
+        };
     };
 
-    this.getProperty = function (configs, name, propName) {
+    this.getProperty = function (configs, name, propName, defaultValue) {
         var property = name + '.' + propName;
 
         if (!configs.hasOwnProperty(property)) {
+            if (defaultValue !== undefined) {
+                return defaultValue
+            }
+
             throw new Error("Missing property: [" + property + "]");
         }
 

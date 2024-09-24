@@ -53,7 +53,7 @@ function createScheduledJob(params) {
         schedule: {
             type: 'CRON',
             value: params.cron,
-            timeZone: 'UTC',
+            timeZone: params.timezone,
         },
     };
 
@@ -71,7 +71,7 @@ function updateScheduledJob(params) {
             edit.schedule = {
                 type: 'CRON',
                 value: params.cron,
-                timeZone: 'UTC',
+                timeZone: params.timezone,
             };
             edit.enabled = params.enabled;
 
@@ -96,6 +96,7 @@ function scheduleSnapshots(snapshotsConfigs) {
             name: snapshotConfig.name,
             taskDescriptor: snapshotTaskDescriptor,
             cron: snapshotConfig.cron,
+            timezone: snapshotConfig.timezone,
             enabled: snapshotConfig.enabled,
             config: {
                 name: snapshotConfig.name
@@ -115,13 +116,15 @@ function getSnapshotsToSchedule(appConfig) {
 }
 
 function scheduleCleanup(appConfig) {
-    const cleanupCron = libs.configParser.parseCleanupCron(appConfig);
+    const params = libs.configParser.parseCleanupCron(appConfig);
+    log.info('Scheduling cleanup with cron: ' + JSON.stringify(params));
     const cleanupCronName = makeCleanupCronName();
 
     scheduleJob({
         name: cleanupCronName,
         taskDescriptor: cleanupTaskDescriptor,
-        cron: cleanupCron,
+        cron: params.cron,
+        timezone: params.timezone,
         enabled: true,
     });
 }
