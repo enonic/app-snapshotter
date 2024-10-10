@@ -10,6 +10,8 @@ exports.run = function (params) {
     const scheduledSnapshotsJobs = libs.configParser.parseSnapshots(appConfig);
     const text = 'Cleanup';
 
+    log.info('Running snapshots cleanup');
+
     try {
         scheduledSnapshotsJobs.forEach(function (schedule) {
             cleanScheduledJob(schedule);

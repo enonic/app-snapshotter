@@ -13,7 +13,7 @@ var appConfig = {
     "snapshot.weekly.keep": "P30D",
     "snapshot.weekly.enabled": "true",
 
-    "cleanup.cron": "*/30 * * * *",
+    "cleanup.cron": "30 * * * *",
 
     "notifier.slack.slackWebhook": "slackWebhookUrl",
     "notifier.slack.project": "Snapshotter",
@@ -77,7 +77,7 @@ var expectedNotifiersConfig = [
 ];
 
 var expectedCleanupCron = {
-    "cron": "*/30 * * * *",
+    "cron": "30 * * * *",
     "timezone": "UTC"
 };
 

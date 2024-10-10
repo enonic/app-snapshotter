@@ -15,7 +15,7 @@ var defaultConfig = {
     "snapshot.weekly.keep": "P30D",
     "snapshot.weekly.enabled": "true",
 
-    "cleanup.cron": "*/30 * * * *"
+    "cleanup.cron": "30 * * * *"
 };
 
 function required(params, name) {

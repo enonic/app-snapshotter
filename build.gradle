@@ -37,6 +37,9 @@ repositories {
     xp.enonicRepo()
 }
 
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = sourceCompatibility
+
 jacocoTestReport {
     reports {
         xml.required = true

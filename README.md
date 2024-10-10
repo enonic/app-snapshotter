@@ -32,7 +32,7 @@ Three schedules (hourly, daily and weekly) are configured by default:
     snapshot.weekly.keep=P30D
     snapshot.weekly.enabled=true
 
-    cleanup.cron=*/30 * * * *
+    cleanup.cron=30 * * * *
 
   
 The ``cron``-property is a string in Unix cron format (http://www.nncron.ru/help/EN/working/cron-format.htm)
