@@ -53,15 +53,18 @@ The cleanup schedule is configured to run every hour by default. This will delet
 
 ### Time Zone
 
-All the schedules are using UTC timezone by default, however you can change it by adding 'timezone' property in the config file:
+All the schedules are using UTC timezone by default, however you can change it by adding 'timezone' property in the config file to a specific snapshot or cleanup schedule, e.g:
 
-    snapshot.snapshotname.timezone=GMT+07:00
-
+    snapshot.hourly.cron=15 09 * * *
+    snapshot.hourly.keep=PT4H
+    snapshot.hourly.enabled=true
+    snapshot.hourly.timezone=GMT+07:00
 or
 
+    cleanup.cron=30 07 * * *
     cleanup.timezone=Europe/Oslo
 
-
+NB: Snapshots names will contain a timestamp in UTC timezone, be aware of that when checking snapshots in Data Toolbox, e.g. if you set your snapshot to be made at 09:00 Oslo time, and it is DST now, then you are going to have a snapshot with name `hourly_2024-10-14t07_00_00.001371z` in UTC time.
 
 ### Notifiers
 
