@@ -13,6 +13,8 @@ jobs:
         with:
           repoUser: ci
           repoPassword: ${{ secrets.ARTIFACTORY_PASSWORD }}
+          dockerhubUsername: enonicpublisher
+          dockerhubToken: ${{ secrets.DOCKERHUB_TOKEN }}
 
   release:
     runs-on: ubuntu-latest
