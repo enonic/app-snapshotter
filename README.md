@@ -117,7 +117,6 @@ Value of the `age` is the max age of the last snapshot in minutes, typically use
 
 ## Upgrade notes
 
-- Starting from version 3.0.0 ``app-snapshotter`` requires ``XP`` version 7.3.x and newer
 - The configurations of Slack and Mail notifications were moved to the main application config file ``$XP_HOME/config/com.enonic.app.snapshotter.cfg``. 
 - The configuration files ``$XP_HOME/config/com.enonic.app.snapshotter.slack.cfg`` and ``$XP_HOME/config/com.enonic.app.snapshotter.mail.cfg`` were removed
 - The ``notifiers`` configuration property was removed from ``$XP_HOME/config/com.enonic.app.snapshotter.cfg`` file.
