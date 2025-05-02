@@ -24,21 +24,27 @@ dependencies {
     include "com.enonic.xp:lib-scheduler:${xpVersion}"
     include "com.enonic.lib:lib-http-client:3.2.2"
     include "com.enonic.lib:lib-mustache:2.1.1"
+    include "com.enonic.lib:lib-asset:1.0.2"
+    include "com.fasterxml.jackson.jr:jackson-jr-objects:2.19.0"
 
-    testImplementation 'org.mockito:mockito-core:5.17.0'
-    testImplementation 'org.mockito:mockito-junit-jupiter:5.17.0'
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.11.4'
     testImplementation "com.enonic.xp:testing:${xpVersion}"
+    testImplementation(platform("org.junit:junit-bom:5.12.2"))
+    testImplementation(platform("org.mockito:mockito-bom:5.17.0"))
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testImplementation 'org.mockito:mockito-junit-jupiter'
 }
 
 repositories {
-    mavenLocal()
     mavenCentral()
-    xp.enonicRepo()
+    xp.enonicRepo('dev')
 }
 
-sourceCompatibility = JavaVersion.VERSION_11
-targetCompatibility = sourceCompatibility
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
 
 jacocoTestReport {
     reports {

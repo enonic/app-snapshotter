@@ -1,51 +1,56 @@
 package com.enonic.app.snapshotter.reporter;
 
+import com.enonic.xp.node.SnapshotResult;
+import com.fasterxml.jackson.jr.ob.JSON;
+import com.fasterxml.jackson.jr.ob.JSONComposer;
+import com.fasterxml.jackson.jr.ob.comp.ArrayComposer;
+import com.fasterxml.jackson.jr.ob.comp.ObjectComposer;
+import com.google.common.collect.Iterables;
+
+import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
 
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.collect.Iterables;
-
-import com.enonic.xp.node.SnapshotResult;
-
-class SnapshotReport
-{
+class SnapshotReport {
     private final SnapshotResultsService resultsService;
 
-    SnapshotReport( final SnapshotResultsService resultsService )
-    {
+    SnapshotReport(final SnapshotResultsService resultsService) {
         this.resultsService = resultsService;
     }
 
-    ObjectNode list()
-    {
+    byte[] list() throws IOException {
         final Instant now = Instant.now();
-        final ObjectNode json = JsonNodeFactory.instance.objectNode();
-        final ArrayNode snapshots = JsonNodeFactory.instance.arrayNode();
-        resultsService.get().forEach( result -> snapshots.add( generateResultJson( now, result ) ) );
-        json.set( "snapshots", snapshots );
-        return json;
+        var snapshots = JSON.std.composeBytes().startObject().startArrayField("snapshots");
+        for (SnapshotResult result : resultsService.get()) {
+            ObjectComposer<ArrayComposer<ObjectComposer<JSONComposer<byte[]>>>> composer = snapshots.startObject();
+            var indices = composer.startArrayField("indices");
+            for (String index : result.getIndices()) {
+                indices.add(index);
+            }
+            indices.end()
+                    .put("timestamp", result.getTimestamp().toString())
+                    .put("age", Duration.between(result.getTimestamp(), now).toMinutes())
+                    .put("name", result.getName())
+                    .put("state", result.getState().name())
+                    .end();
+        }
+        return snapshots.end().end().finish();
     }
 
-    ObjectNode summary()
-    {
+    byte[] summary() throws IOException {
         final Instant now = Instant.now();
-        return generateResultJson( now, Iterables.getLast( resultsService.get() ) );
+        var composer = JSON.std.composeBytes().startObject();
+        SnapshotResult result = Iterables.getLast(resultsService.get());
+        var indices = composer.startArrayField("indices");
+        for (String index : result.getIndices()) {
+            indices.add(index);
+        }
+        indices.end()
+                .put("timestamp", result.getTimestamp().toString())
+                .put("age", Duration.between(result.getTimestamp(), now).toMinutes())
+                .put("name", result.getName())
+                .put("state", result.getState().name())
+                .end();
+        return composer.end().finish();
     }
-
-    private ObjectNode generateResultJson( final Instant now, final SnapshotResult result )
-    {
-        final ObjectNode snapshotNode = JsonNodeFactory.instance.objectNode();
-        final ArrayNode indices = JsonNodeFactory.instance.arrayNode();
-        result.getIndices().forEach( indices::add );
-        snapshotNode.set( "indices", indices );
-        snapshotNode.put( "timestamp", result.getTimestamp().toString() );
-        snapshotNode.put( "age", Duration.between( result.getTimestamp(), now ).toMinutes() );
-        snapshotNode.put( "name", result.getName() );
-        snapshotNode.put( "state", result.getState().name() );
-        return snapshotNode;
-    }
-
 }

@@ -5,4 +5,7 @@
   <allow>
     <principal>role:system.admin</principal>
   </allow>
+  <apis>
+    <api>notifier-test-service</api>
+  </apis>
 </tool>

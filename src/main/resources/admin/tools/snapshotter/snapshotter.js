@@ -1,6 +1,7 @@
 const libs = {
     snapshotter: require('/lib/snapshotter'),
     portal: require('/lib/xp/portal'),
+    asset: require('/lib/enonic/asset'),
     mustache: require('/lib/mustache'),
     snapshotJobScheduler: require('/lib/snapshot-job-scheduler'),
     configParser: require('/lib/config-parser')
@@ -27,9 +28,9 @@ exports.get = function (req) {
     const cronJobs = makeCronJobsData(appConfig);
 
     const model = {
-        jsUrl: libs.portal.assetUrl({path: "/js/snapshotter.js"}),
-        assetsUrl: libs.portal.assetUrl({path: ""}),
-        svcUrl: libs.portal.serviceUrl({service: 'Z'}).slice(0, -1),
+        jsUrl: libs.asset.assetUrl({path: "/js/snapshotter.js"}),
+        assetsUrl: libs.asset.assetUrl({path: ""}),
+        svcUrl: libs.portal.apiUrl({api: 'notifier-test-service'}),
         data: {
             cronJobs: cronJobs,
             notifiers: notifiers

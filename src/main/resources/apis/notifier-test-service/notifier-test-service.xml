@@ -1,5 +1,5 @@
-<service>
+<api>
   <allow>
     <principal>role:system.admin</principal>
   </allow>
-</service>
+</api>

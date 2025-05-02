@@ -23,88 +23,74 @@ import com.enonic.xp.script.bean.ScriptBean;
 import com.enonic.xp.snapshot.SnapshotService;
 
 public class SnapshotterHandler
-    implements ScriptBean
-{
-    private final Logger LOG = LoggerFactory.getLogger( SnapshotterHandler.class );
+        implements ScriptBean {
+    private final Logger LOG = LoggerFactory.getLogger(SnapshotterHandler.class);
 
     private Supplier<SnapshotService> snapshotServiceSupplier;
 
     private static final String NAME_TIME_SEPARATOR = "_";
 
     @Override
-    public void initialize( final BeanContext context )
-    {
-        this.snapshotServiceSupplier = context.getService( SnapshotService.class );
+    public void initialize(final BeanContext context) {
+        this.snapshotServiceSupplier = context.getService(SnapshotService.class);
     }
 
-    public String snapshot( final String scheduleName, final String repositoryId )
-    {
+    public String snapshot(final String scheduleName, final String repositoryId) {
         final SnapshotParams.Builder paramsBuilder = SnapshotParams.create().
-            snapshotName( scheduleName + NAME_TIME_SEPARATOR + createTimestampString() );
+                snapshotName(scheduleName + NAME_TIME_SEPARATOR + createTimestampString());
 
-        if ( !Strings.isNullOrEmpty( repositoryId ) )
-        {
-            paramsBuilder.repositoryId( RepositoryId.from( repositoryId ) );
+        if (!Strings.isNullOrEmpty(repositoryId)) {
+            paramsBuilder.repositoryId(RepositoryId.from(repositoryId));
         }
 
-        final SnapshotResult snapshotResult = snapshotServiceSupplier.get().snapshot( paramsBuilder.build() );
+        final SnapshotResult snapshotResult = snapshotServiceSupplier.get().snapshot(paramsBuilder.build());
 
         return snapshotResult.getState().name();
     }
 
-    public void deleteSnapshot( final String scheduleName, final String keep, final String appPrefix )
-    {
-        deleteSnapshot( scheduleName, appPrefix, getThreshold( Duration.parse( keep ) ) );
+    public void deleteSnapshot(final String scheduleName, final String keep, final String appPrefix) {
+        deleteSnapshot(scheduleName, appPrefix, getThreshold(Duration.parse(keep)));
     }
 
-    public String getDefaultHost()
-    {
-        try
-        {
+    public String getDefaultHost() {
+        try {
             return InetAddress.getLocalHost().getHostName();
-        }
-        catch ( IOException e )
-        {
+        } catch (IOException e) {
             return "UNKNOWN";
         }
     }
 
-    private void deleteSnapshot( final String scheduleName, final String appPrefix, final Instant threshold )
-    {
-        LOG.debug( "Deleting snapshots of type [" + scheduleName + "] older than [" + threshold + "]" );
+    private void deleteSnapshot(final String scheduleName, final String appPrefix, final Instant threshold) {
+        LOG.debug("Deleting snapshots of type [" + scheduleName + "] older than [" + threshold + "]");
 
         final SnapshotResults snapshots = snapshotServiceSupplier.get().list();
 
         final List<String> toBeDeleted = snapshots.stream().
-            filter( ( snapshot ) -> nameFilter(snapshot.getName(), scheduleName, appPrefix) ).
-            filter( ( snapshot ) -> snapshot.getTimestamp().getEpochSecond() > 0 ). // ES returns snapshots with "zero" timestamp when they are being created
-            filter( ( snapshot ) -> snapshot.getTimestamp().isBefore( threshold ) ).
-            map( SnapshotResult::getName ).
-            collect( Collectors.toList() );
+                filter((snapshot) -> nameFilter(snapshot.getName(), scheduleName, appPrefix)).
+                filter((snapshot) -> snapshot.getTimestamp().getEpochSecond() > 0). // ES returns snapshots with "zero" timestamp when they are being created
+                        filter((snapshot) -> snapshot.getTimestamp().isBefore(threshold)).
+                map(SnapshotResult::getName).
+                collect(Collectors.toList());
 
-        if ( !toBeDeleted.isEmpty() )
-        {
-            snapshotServiceSupplier.get().delete( DeleteSnapshotParams.create().
-                addAll( toBeDeleted ).
-                build() );
+        if (!toBeDeleted.isEmpty()) {
+            snapshotServiceSupplier.get().delete(DeleteSnapshotParams.create().
+                    addAll(toBeDeleted).
+                    build());
         }
     }
 
-    private boolean nameFilter( final String snapshotName, final String scheduleName, final String appPrefix )
-    {
+    private boolean nameFilter(final String snapshotName, final String scheduleName, final String appPrefix) {
         final String scheduleNameWithSeparator = scheduleName + NAME_TIME_SEPARATOR;
-        final String scheduleNameWithoutPrefix = scheduleNameWithSeparator.replace( appPrefix, "" );
-        return snapshotName.startsWith( scheduleNameWithSeparator ) || snapshotName.startsWith( scheduleNameWithoutPrefix );
+        final String scheduleNameWithoutPrefix = scheduleNameWithSeparator.replace(appPrefix, "");
+        return snapshotName.startsWith(scheduleNameWithSeparator) || snapshotName.startsWith(scheduleNameWithoutPrefix);
     }
 
-    private Instant getThreshold( final Duration dailyKeep )
-    {
-        return Instant.now().minus( dailyKeep );
+    private Instant getThreshold(final Duration dailyKeep) {
+        return Instant.now().minus(dailyKeep);
     }
 
-    private String createTimestampString()
-    {
-        return Instant.now().toString().toLowerCase().replace( ":", "_" );
+    private String createTimestampString() {
+        return Instant.now().toString().toLowerCase().replace(":", "_");
     }
 
 }

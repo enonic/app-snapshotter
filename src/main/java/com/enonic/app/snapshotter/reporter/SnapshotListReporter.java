@@ -1,42 +1,37 @@
 package com.enonic.app.snapshotter.reporter;
 
+import com.enonic.xp.status.StatusReporter;
+import com.google.common.net.MediaType;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
-import com.fasterxml.jackson.databind.JsonNode;
-
-import com.enonic.xp.status.JsonStatusReporter;
-import com.enonic.xp.status.StatusReporter;
+import java.io.IOException;
+import java.io.OutputStream;
 
 @Component(immediate = true, service = StatusReporter.class)
 public class SnapshotListReporter
-    extends JsonStatusReporter
-{
+        implements StatusReporter {
     private SnapshotResultsService resultsService;
 
     @Override
-    public JsonNode getReport()
-    {
-        try
-        {
-            return new SnapshotReport( resultsService ).list();
-        }
-        catch ( Exception e )
-        {
-            throw new RuntimeException( "cannot get snapshot", e.getCause() );
-        }
+    public MediaType getMediaType() {
+        return MediaType.JSON_UTF_8;
     }
 
     @Override
-    public String getName()
-    {
+    public void report(final OutputStream outputStream)
+            throws IOException {
+        outputStream.write(new SnapshotReport(resultsService).list());
+    }
+
+    @Override
+    public String getName() {
         return "com.enonic.app.snapshotter.list";
     }
 
     @SuppressWarnings("unused")
     @Reference
-    public void setSnapshotResultsService( final SnapshotResultsService resultsService )
-    {
+    public void setSnapshotResultsService(final SnapshotResultsService resultsService) {
         this.resultsService = resultsService;
     }
 }

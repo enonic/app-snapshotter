@@ -15,7 +15,7 @@
 
         const testNotifier = function (notifierName) {
             const xhr = new XMLHttpRequest();
-            xhr.open('GET', `${svcUrl}notifier-test-service?notifierName=${notifierName}`);
+            xhr.open('GET', `${svcUrl}?notifierName=${notifierName}`);
             xhr.send();
 
             xhr.onload = function() {

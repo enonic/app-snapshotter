@@ -16,8 +16,7 @@ import com.enonic.xp.snapshot.SnapshotService;
 
 @Component(immediate = true)
 public class CachedSnapshotsResultService
-    implements SnapshotResultsService
-{
+        implements SnapshotResultsService {
     private SnapshotService snapshotService;
 
     private Cache<String, SnapshotResults> snapshotCache;
@@ -26,51 +25,41 @@ public class CachedSnapshotsResultService
 
     private TimeUnit unit = TimeUnit.MINUTES;
 
-    public CachedSnapshotsResultService()
-    {
+    public CachedSnapshotsResultService() {
     }
 
     @Activate
-    public void activate()
-    {
+    public void activate() {
         this.snapshotCache = CacheBuilder.newBuilder().
-            maximumSize( 1 ).
-            expireAfterWrite( duration, unit ).
-            build();
+                maximumSize(1).
+                expireAfterWrite(duration, unit).
+                build();
     }
 
     @Override
-    public SnapshotResults get()
-    {
-        try
-        {
-            return snapshotCache.get( "results", () -> snapshotService.list() );
-        }
-        catch ( ExecutionException e )
-        {
-            throw new RuntimeException( "cannot get snapshots", e );
+    public SnapshotResults get() {
+        try {
+            return snapshotCache.get("results", () -> snapshotService.list());
+        } catch (ExecutionException e) {
+            throw new RuntimeException("cannot get snapshots", e);
         }
     }
 
     @SuppressWarnings("unused")
     @Reference
-    public void setSnapshotService( final SnapshotService snapshotService )
-    {
+    public void setSnapshotService(final SnapshotService snapshotService) {
         this.snapshotService = snapshotService;
     }
 
-    public void setSnapshotCache( final Cache<String, SnapshotResults> snapshotCache )
-    {
+    public void setSnapshotCache(final Cache<String, SnapshotResults> snapshotCache) {
         this.snapshotCache = snapshotCache;
     }
 
-    public void setDuration( final int duration )
-    {
+    public void setDuration(final int duration) {
         this.duration = duration;
     }
 
-    public void setUnit( final TimeUnit unit )
-    {
+    public void setUnit(final TimeUnit unit) {
         this.unit = unit;
     }
 }

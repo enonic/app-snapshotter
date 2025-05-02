@@ -5,25 +5,19 @@ import org.junit.jupiter.api.Test;
 import com.enonic.xp.testing.ScriptTestSupport;
 
 public class SlackNotifierTest
-    extends ScriptTestSupport
-{
-
+        extends ScriptTestSupport {
     @Test
-    public void testNotify()
-    {
-        runFunction( "test/slack-notifier-test.js", "testNotify" );
+    public void testNotify() {
+        runFunction("test/slack-notifier-test.js", "testNotify");
     }
 
     @Test
-    public void testSuccess()
-    {
-        runFunction( "test/slack-notifier-test.js", "testSuccess" );
+    public void testSuccess() {
+        runFunction("test/slack-notifier-test.js", "testSuccess");
     }
 
     @Test
-    public void testFailed()
-    {
-        runFunction( "test/slack-notifier-test.js", "testFailed" );
+    public void testFailed() {
+        runFunction("test/slack-notifier-test.js", "testFailed");
     }
-
 }
