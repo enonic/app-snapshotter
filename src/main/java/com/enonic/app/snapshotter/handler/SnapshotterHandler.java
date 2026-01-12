@@ -81,7 +81,9 @@ public class SnapshotterHandler
 
     private boolean nameFilter(final String snapshotName, final String scheduleName, final String appPrefix) {
         final String scheduleNameWithSeparator = scheduleName + NAME_TIME_SEPARATOR;
-        final String scheduleNameWithoutPrefix = scheduleNameWithSeparator.replace(appPrefix, "");
+        final String scheduleNameWithoutPrefix = scheduleNameWithSeparator.startsWith(appPrefix) 
+            ? scheduleNameWithSeparator.substring(appPrefix.length()) 
+            : scheduleNameWithSeparator;
         return snapshotName.startsWith(scheduleNameWithSeparator) || snapshotName.startsWith(scheduleNameWithoutPrefix);
     }
 

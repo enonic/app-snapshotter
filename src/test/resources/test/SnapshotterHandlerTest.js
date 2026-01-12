@@ -34,3 +34,11 @@ exports.deleteSnapshot = function () {
 exports.getConfig = function () {
     t.assertJsonEquals(expectedDefaultConfig, snapshotter.getConfig());
 };
+
+exports.deleteSnapshotHourly = function () {
+    snapshotter.deleteSnapshot({
+        scheduleName: 'com.enonic.app.snapshotter--hourly',
+        appPrefix: 'com.enonic.app.snapshotter--',
+        keep: 'PT1H'
+    });
+};
