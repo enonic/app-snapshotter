@@ -1,0 +1,8 @@
+description: "Snapshot creation"
+form:
+- type: "TextLine"
+  name: "name"
+  label: "Snapshot name"
+  occurrences:
+    min: 0
+    max: 1

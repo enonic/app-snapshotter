@@ -1,5 +1,0 @@
-<api>
-  <allow>
-    <principal>role:system.admin</principal>
-  </allow>
-</api>

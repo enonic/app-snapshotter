@@ -1,0 +1,6 @@
+displayName: "Snapshotter"
+description: "Scheduled snapshotting"
+allow:
+- "role:system.admin"
+apis:
+- "notifier-test-service"

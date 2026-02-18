@@ -3,7 +3,7 @@ plugins {
     id 'jacoco'
     id 'maven-publish'
     id 'com.enonic.defaults' version '2.1.6'
-    id 'com.enonic.xp.app' version '3.6.2'
+    id 'com.enonic.xp.app' version '4.0.0-A1'
 }
 
 app {
@@ -28,8 +28,8 @@ dependencies {
     include "com.fasterxml.jackson.jr:jackson-jr-objects:2.20.1"
 
     testImplementation "com.enonic.xp:testing:${xpVersion}"
-    testImplementation(platform("org.junit:junit-bom:6.0.1"))
-    testImplementation(platform("org.mockito:mockito-bom:5.21.0"))
+    testImplementation( platform( "org.junit:junit-bom:6.0.1" ) )
+    testImplementation( platform( "org.mockito:mockito-bom:5.21.0" ) )
     testImplementation 'org.junit.jupiter:junit-jupiter'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     testImplementation 'org.mockito:mockito-junit-jupiter'
@@ -37,12 +37,12 @@ dependencies {
 
 repositories {
     mavenCentral()
-    xp.enonicRepo('dev')
+    xp.enonicRepo( 'dev' )
 }
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
+        languageVersion = JavaLanguageVersion.of( 25 )
     }
 }
 
