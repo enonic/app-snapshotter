@@ -30,7 +30,7 @@ exports.get = function (req) {
     const model = {
         jsUrl: libs.asset.assetUrl({path: "/js/snapshotter.js"}),
         assetsUrl: libs.asset.assetUrl({path: ""}),
-        svcUrl: libs.portal.apiUrl({api: 'notifier-test-service'}),
+        svcUrl: libs.portal.apiUrl({api: `${app.name}:notifier-test-service`}),
         data: {
             cronJobs: cronJobs,
             notifiers: notifiers
