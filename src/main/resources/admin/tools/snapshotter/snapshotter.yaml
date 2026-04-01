@@ -1,4 +1,5 @@
-displayName: "Snapshotter"
+kind: "AdminTool"
+title: "Snapshotter"
 description: "Scheduled snapshotting"
 allow:
 - "role:system.admin"

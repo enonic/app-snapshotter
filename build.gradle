@@ -3,14 +3,7 @@ plugins {
     id 'jacoco'
     id 'maven-publish'
     id 'com.enonic.defaults' version '2.1.6'
-    id 'com.enonic.xp.app' version '4.0.0-A1'
-}
-
-app {
-    displayName = 'Snapshotter'
-    vendorName = 'Enonic AS'
-    vendorUrl = 'https://enonic.com'
-    systemVersion = "${xpVersion}"
+    id 'com.enonic.xp.app' version '4.0.0-A3'
 }
 
 dependencies {
@@ -24,7 +17,7 @@ dependencies {
     include "com.enonic.xp:lib-scheduler:${xpVersion}"
     include "com.enonic.lib:lib-http-client:3.2.2"
     include "com.enonic.lib:lib-mustache:2.1.1"
-    include "com.enonic.lib:lib-asset:1.0.3"
+    include "com.enonic.lib:lib-asset:2.0.0-SNAPSHOT"
     include "com.fasterxml.jackson.jr:jackson-jr-objects:2.21.2"
 
     testImplementation "com.enonic.xp:testing:${xpVersion}"
@@ -38,12 +31,6 @@ dependencies {
 repositories {
     mavenCentral()
     xp.enonicRepo( 'dev' )
-}
-
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of( 25 )
-    }
 }
 
 jacocoTestReport {

@@ -1,0 +1,5 @@
+kind: "Application"
+title: "Snapshotter"
+description: "Automatic snapshots of Enonic XP instance"
+vendorName: "Enonic AS"
+vendorUrl: "https://enonic.com"

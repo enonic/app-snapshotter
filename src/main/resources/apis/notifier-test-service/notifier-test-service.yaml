@@ -1,0 +1,4 @@
+kind: "API"
+title: "notifier-test-service"
+allow:
+- "role:system.admin"
