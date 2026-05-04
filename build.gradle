@@ -18,7 +18,7 @@ dependencies {
     include "com.enonic.lib:lib-http-client:3.2.2"
     include "com.enonic.lib:lib-mustache:2.1.1"
     include "com.enonic.lib:lib-asset:2.0.0-SNAPSHOT"
-    include "com.fasterxml.jackson.jr:jackson-jr-objects:2.21.2"
+    include "com.fasterxml.jackson.jr:jackson-jr-objects:2.21.3"
 
     testImplementation "com.enonic.xp:testing:${xpVersion}"
     testImplementation( platform( "org.junit:junit-bom:6.0.3" ) )
