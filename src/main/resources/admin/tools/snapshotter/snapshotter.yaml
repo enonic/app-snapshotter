@@ -4,4 +4,5 @@ description: "Scheduled snapshotting"
 allow:
 - "role:system.admin"
 apis:
+- "asset"
 - "notifier-test-service"
