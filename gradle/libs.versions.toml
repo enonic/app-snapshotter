@@ -1,0 +1,18 @@
+[versions]
+asset = "2.0.0-SNAPSHOT"
+http-client = "4.0.0-SNAPSHOT"
+jackson-jr = "2.21.3"
+junit = "6.0.3"
+mockito = "5.23.0"
+mustache = "2.1.1"
+
+[libraries]
+jackson-jr-objects = { module = "com.fasterxml.jackson.jr:jackson-jr-objects", version.ref = "jackson-jr" }
+junit-bom = { module = "org.junit:junit-bom", version.ref = "junit" }
+junit-jupiter = { module = "org.junit.jupiter:junit-jupiter" }
+junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher" }
+lib-asset = { module = "com.enonic.lib:lib-asset", version.ref = "asset" }
+lib-http-client = { module = "com.enonic.lib:lib-http-client", version.ref = "http-client" }
+lib-mustache = { module = "com.enonic.lib:lib-mustache", version.ref = "mustache" }
+mockito-bom = { module = "org.mockito:mockito-bom", version.ref = "mockito" }
+mockito-junit-jupiter = { module = "org.mockito:mockito-junit-jupiter" }

@@ -15,17 +15,17 @@ dependencies {
     include "com.enonic.xp:lib-cluster:${xpVersion}"
     include "com.enonic.xp:lib-mail:${xpVersion}"
     include "com.enonic.xp:lib-scheduler:${xpVersion}"
-    include "com.enonic.lib:lib-http-client:4.0.0-SNAPSHOT"
-    include "com.enonic.lib:lib-mustache:2.1.1"
-    include "com.enonic.lib:lib-asset:2.0.0-SNAPSHOT"
-    include "com.fasterxml.jackson.jr:jackson-jr-objects:2.21.3"
+    include libs.lib.http.client
+    include libs.lib.mustache
+    include libs.lib.asset
+    include libs.jackson.jr.objects
 
     testImplementation "com.enonic.xp:testing:${xpVersion}"
-    testImplementation( platform( "org.junit:junit-bom:6.0.3" ) )
-    testImplementation( platform( "org.mockito:mockito-bom:5.23.0" ) )
-    testImplementation 'org.junit.jupiter:junit-jupiter'
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-    testImplementation 'org.mockito:mockito-junit-jupiter'
+    testImplementation( platform( libs.junit.bom ) )
+    testImplementation( platform( libs.mockito.bom ) )
+    testImplementation libs.junit.jupiter
+    testRuntimeOnly libs.junit.platform.launcher
+    testImplementation libs.mockito.junit.jupiter
 }
 
 repositories {
