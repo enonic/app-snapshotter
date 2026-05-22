@@ -1,6 +1,6 @@
 [versions]
-asset = "2.0.0-SNAPSHOT"
-http-client = "4.0.0-SNAPSHOT"
+asset = "2.0.0-B1"
+http-client = "4.0.0-B1"
 jackson-jr = "2.21.3"
 junit = "6.0.3"
 mockito = "5.23.0"
