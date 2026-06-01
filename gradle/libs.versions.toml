@@ -1,7 +1,7 @@
 [versions]
 asset = "2.0.0-SNAPSHOT"
 http-client = "4.0.0-SNAPSHOT"
-jackson-jr = "2.21.3"
+jackson-jr = "2.22.0"
 junit = "6.1.0"
 mockito = "5.23.0"
 mustache = "2.1.1"
