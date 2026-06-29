@@ -2,7 +2,7 @@
 asset = "2.0.0"
 http-client = "4.0.0"
 jackson-jr = "2.21.3"
-junit = "6.1.0"
+junit = "6.1.1"
 mockito = "5.23.0"
 mustache = "2.1.1"
 
