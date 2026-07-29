@@ -7,7 +7,7 @@ function SnapshotterConfigParser(config) {
 
         Object.keys(config).forEach(function (key) {
             if (key.startsWith(prefix) === true) {
-                result[key.substring(prefix.length())] = config[key];
+                result[key.substring(prefix.length)] = config[key];
             }
         });
 
