@@ -3,7 +3,7 @@ plugins {
     id 'jacoco'
     id 'maven-publish'
     id 'com.enonic.defaults' version '2.1.7'
-    id 'com.enonic.xp.app' version '4.1.0'
+    id 'com.enonic.xp.app' version '4.2.0'
 }
 
 dependencies {
@@ -44,4 +44,8 @@ check.dependsOn jacocoTestReport
 
 test {
     useJUnitPlatform()
+}
+
+xp {
+    scriptEngines = ['Nashorn', 'GraalJS']
 }
