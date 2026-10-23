@@ -1,6 +1,6 @@
 [versions]
 asset = "2.0.1"
-http-client = "4.0.0"
+http-client = "4.0.1"
 jackson-jr = "2.22.3"
 junit = "6.1.2"
 mockito = "5.24.0"
